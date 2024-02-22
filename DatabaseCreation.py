@@ -16,7 +16,7 @@ def connect():
     # create projects table
     cur.execute("CREATE TABLE IF NOT EXISTS Project("
                 "PROJECT_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-                "PROJECT_NAME TEXT UNIQUE, "
+                "PROJECT_NAME TEXT UNIQUE ON CONFLICT REPLACE, "
                 "START_DATE DATETIME, "
                 "END_DATE DATETIME, "
                 "STATUS TEXT, "
@@ -76,6 +76,7 @@ def connect():
         "CREATE TABLE IF NOT EXISTS ProjectMessages("
         "MESSAGE_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
         "PROJECT_ID INTEGER NOT NULL, "
+        "USERNAME TEXT NOT NULL, "
         "MESSAGE TEXT, "
         "DATE_ADDED DATETIME DEFAULT CURRENT_TIMESTAMP,"
         "CONSTRAINT FK_PROJECT FOREIGN KEY (PROJECT_ID) REFERENCES Project(PROJECT_ID) ON DELETE CASCADE"
@@ -83,7 +84,8 @@ def connect():
 
     cur.execute("INSERT INTO ProjectMessages ("
                 "PROJECT_ID,"
-                "MESSAGE) VALUES ( 1, 'too hard')")
+                "USERNAME,"
+                "MESSAGE) VALUES ( 1, 'Karl Gospel', 'too hard')")
     print(pd.read_sql("SELECT * FROM ProjectMessages", conn))
 
     # Create Project Members table

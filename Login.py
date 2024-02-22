@@ -12,15 +12,13 @@ import sqlite3
 
 class Login:
 
-    # def __init__(self, username, password):
-    #     self.username = username
-    #     self.password = password
+    current_user = None
 
     def sign_in(self,username, password):
 
         if self.check_password(username, password):
-            global current_user
-            current_user = username
+            #global current_user
+            Login.current_user = username
             return True
         else:
             return False
@@ -58,12 +56,17 @@ class Login:
             return False
 
     def is_admin(self, username):
+        print('given username' )
+        print(username)
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = "SELECT ADMIN FROM Login WHERE USERNAME = (?)"
         cur.execute(sql, [username])
-        user = cur.fetchone()[0]
+        x = cur.fetchone()
+        print(x)
+        user = x[0]
         print(user)
+        print(pd.read_sql("SELECT * FROM Login", conn))
         if user == 1:
             conn.commit()
             conn.close()

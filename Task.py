@@ -1,4 +1,7 @@
 import sqlite3
+from email.mime.text import MIMEText
+from tkinter import messagebox
+
 import pandas as pd
 from datetime import datetime
 
@@ -8,27 +11,19 @@ class Task:
     def get_task(self, taskID):
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
-        sql = """SELECT t.TASK_NAME, 
-                                t.DESCRIPTION, 
-                                t.ASSIGNED_TO, 
-                                t.STATUS, 
-                                t.START_DATE, 
-                                t.END_DATE, 
-                                t.PERCENTAGE_COMPLETE 
-                                FROM Tasks t 
-                                
-                                WHERE t.TASK_ID = (?)"""
+        sql = """   SELECT  t.TASK_NAME
+                            FROM Tasks t 
+                            WHERE t.TASK_ID = (?)"""
         cur.execute(sql, [taskID])
-        tasks = cur.fetchall()
+        task = cur.fetchone()
+        task = task[0]
         conn.commit()
         conn.close()
-        return tasks
+        return task
 
-    def edit_task(self, task_id, task_name, description, status, progress, assigned, comment):
-        conn = sqlite3.connect("project.db")
-        cur = conn.cursor()
+    def update_task_start_and_end_dates(self, task_id, status):
         # Set start and end dates based on if status has been updated
-        # Users options are limited to these to minimise errors
+        # Users options are limited to minimise errors
         try:
             current_status = self.get_status(task_id)
             if current_status == 'Not Started' and status == 'In-Progress':
@@ -38,13 +33,42 @@ class Task:
             elif current_status == 'Not Started' and status == 'Completed':
                 self.set_start_date(task_id)
                 self.set_end_date(task_id)
+            elif current_status == 'Completed' and status == 'In-Progress':
+                self.delete_task_end_date(task_id)
+        except sqlite3.Error as e:
+            print("Error updating task start and end dates:", e)
 
-            task_details = (task_name, description, status, progress, assigned, comment, task_id)
+    def get_project_for_task(self, task_id):
+        conn = sqlite3.connect("project.db")
+        cur = conn.cursor()
+        sql = """   SELECT p.PROJECT_NAME 
+                    FROM Tasks t
+                    INNER JOIN Project p
+                    ON p.PROJECT_ID = t.PROJECT_ID
+                    WHERE t.TASK_ID = (?)
+        """
+
+        cur.execute(sql, [task_id])
+        project_name = cur.fetchone()[0]
+        conn.commit()
+        conn.close()
+        return project_name
+
+    def edit_task(self, task_id, task_name, description, status, progress, assigned, comment):
+        conn = sqlite3.connect("project.db")
+        cur = conn.cursor()
+
+        try:
+            if status == 'Completed':
+                self.set_task_percent_complete(task_id, 100)
+            else:
+                self.set_task_percent_complete(task_id, progress)
+            self.update_task_start_and_end_dates(task_id, status)
+            task_details = (task_name, description, status, assigned, comment, task_id)
             sql = """UPDATE Tasks 
                         SET TASK_NAME = (?), 
                         DESCRIPTION = (?), 
                         STATUS = (?), 
-                        PERCENTAGE_COMPLETE = (?), 
                         ASSIGNED_TO = (?),
                         COMMENT = (?)
                         WHERE TASK_ID = (?)
@@ -56,35 +80,72 @@ class Task:
             print("Error editing task:", e)
             conn.commit()
             conn.close()
+
+    def set_task_percent_complete(self, task_id, progress):
+        conn = sqlite3.connect("project.db")
+        cur = conn.cursor()
+        try:
+            completed = (progress, task_id)
+
+            sql = """ UPDATE Tasks 
+                        SET PERCENTAGE_COMPLETE = (?) 
+                        WHERE TASK_ID = (?)
+                        """
+            cur.execute(sql, completed)
+            print(pd.read_sql("SELECT * FROM Tasks", conn))
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            print("Error setting task percent complete :", e)
+
     def set_start_date(self, task_id):
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
+        try:
+            new_date = (datetime.now(), task_id)
 
-        new_date = (datetime.now(), task_id)
+            sql = """ UPDATE Tasks 
+                        SET START_DATE = (?) 
+                        WHERE TASK_ID = (?)
+                        """
 
-        sql = """ UPDATE Tasks 
-                    SET START_DATE = (?) 
-                    WHERE TASK_ID = (?)
-                    """
-        cur.execute(sql, new_date)
-        print(pd.read_sql("SELECT * FROM Tasks", conn))
-        conn.commit()
-        conn.close()
-
+            cur.execute(sql, new_date)
+            print(pd.read_sql("SELECT * FROM Tasks", conn))
+            conn.commit()
+            conn.close()
+        except sqlite3.Error as e:
+            print("Error setting task start date:", e)
+            conn.commit()
+            conn.close()
     def set_end_date(self, task_id):
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
+        try:
+            new_date = (datetime.now(), task_id)
 
-        new_date = (datetime.now(), task_id)
+            sql = """ UPDATE Tasks 
+                        SET END_DATE = (?) 
+                        WHERE TASK_ID = (?)
+                        """
+            cur.execute(sql, new_date)
+            print(pd.read_sql("SELECT * FROM Tasks", conn))
+            conn.commit()
+            conn.close()
+        except sqlite3.Error as e:
+            print("Error setting task end date:", e)
+            conn.commit()
+            conn.close()
 
-        sql = """ UPDATE Tasks 
-                    SET END_DATE = (?) 
-                    WHERE TASK_ID = (?)
-                    """
-        cur.execute(sql, new_date)
-        print(pd.read_sql("SELECT * FROM Tasks", conn))
+    def delete_task_end_date(self, task_id):
+        conn = sqlite3.connect("project.db")
+        cur = conn.cursor()
+        sql = """   UPDATE Tasks 
+                    SET END_DATE = NULL
+                    WHERE TASK_ID = (?)"""
+        cur.execute(sql, [task_id])
         conn.commit()
         conn.close()
+
     def add_comment(self, comment, taskID, username):
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
@@ -126,8 +187,7 @@ class Task:
         conn = sqlite3.connect("project.db")
         conn.execute("PRAGMA foreign_keys = ON")
         cur = conn.cursor()
-        sql = ''' DELETE FROM TaskMessages WHERE MESSAGE_ID = ? 
-                                        VALUES(?) '''
+        sql = ''' DELETE FROM TaskMessages WHERE MESSAGE_ID = ? '''
         cur.execute(sql, commentID)
         print('COMMENT  REMOVE')
         print(pd.read_sql("SELECT * FROM TaskMessages", conn))
@@ -226,4 +286,40 @@ class Task:
         print(pd.read_sql("SELECT * FROM Tasks", conn))
         conn.commit()
         conn.close()
+
+    def is_assigned_to(self, task_id):
+        conn = sqlite3.connect("project.db")
+        cur = conn.cursor()
+        sql = "SELECT ASSIGNED_TO FROM Tasks WHERE TASK_ID = (?)"
+        try:
+            cur.execute(sql, (task_id,))
+            per = cur.fetchone()
+            per = per[0]
+            conn.commit()
+            conn.close()
+            return per
+        except Exception as e:
+            print("Error fetching is assigned to :", e)
+            conn.commit()
+            conn.close()
+
+    def get_owner_from_task(self, task_id):
+        conn = sqlite3.connect("project.db")
+        cur = conn.cursor()
+        sql = """   SELECT p.OWNER 
+                    FROM Tasks t
+                    INNER JOIN Project p ON p.PROJECT_ID = t.PROJECT_ID
+                    WHERE TASK_ID = (?)"""
+        try:
+            cur.execute(sql, [task_id])
+            per = cur.fetchone()
+            per = per[0]
+            conn.commit()
+            conn.close()
+            return per
+        except Exception as e:
+            print("Error fetching owner from task:", e)
+            conn.commit()
+            conn.close()
+
 
