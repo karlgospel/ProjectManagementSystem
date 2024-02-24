@@ -54,19 +54,19 @@ class TeamMember:
     #     conn.commit()
     #     conn.close()
 
-    def create_project(self, projectName, owner, status, description):
-
-        conn = sqlite3.connect("project.db")
-        cur = conn.cursor()
-
-        project = (projectName, owner, status, description, 0)
-        sql = ''' INSERT INTO Project (PROJECT_NAME, OWNER, STATUS, DESCRIPTION, PERCENTAGE_COMPLETE)
-                        VALUES(?,?,?,?,?) '''
-        cur.execute(sql, project)
-        print('PROJECT  create')
-        print(pd.read_sql("SELECT * FROM Project", conn))
-        conn.commit()
-        conn.close()
+    # def create_project(self, projectName, owner, status, description):
+    #
+    #     conn = sqlite3.connect("project.db")
+    #     cur = conn.cursor()
+    #     self.update_start_and_end_dates(old_project_name, status)
+    #     project = (projectName, owner, status, description, 0)
+    #     sql = ''' INSERT INTO Project (PROJECT_NAME, OWNER, STATUS, DESCRIPTION, PERCENTAGE_COMPLETE)
+    #                     VALUES(?,?,?,?,?) '''
+    #     cur.execute(sql, project)
+    #     print('PROJECT  create')
+    #     print(pd.read_sql("SELECT * FROM Project", conn))
+    #     conn.commit()
+    #     conn.close()
 
 
     def change_password(self, username, old_password, new_password):

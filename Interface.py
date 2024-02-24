@@ -4,20 +4,15 @@ from tkinter import scrolledtext
 from tkinter import messagebox
 from tkinter.ttk import Progressbar
 from tkinter import ttk
-from tkinter import filedialog
-from os import path
-from tkinter import Menu
-import tkinter.scrolledtext
-from tkinter import simpledialog
+
 
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
 from Email import Email
-from ProjectManager import ProjectManager as pm
 from Project import Project
 from Login import Login
-from tkcalendar import Calendar
 
+
+from SuperAdmin import SuperAdmin
 from Task import Task
 from TeamMember import TeamMember
 
@@ -30,49 +25,126 @@ class LoginPage(tk.Toplevel):
         screen_width = self.winfo_screenwidth()
         screen_height = self.winfo_screenheight()
         # Calculate login window dimensions
-        login_width = 250
-        login_height = 150
+        login_width = 260
+        login_height = 260
 
         # Calculate login window position
         x = (screen_width - login_width) // 2
         y = (screen_height - login_height) // 2
         self.geometry(f"{login_width}x{login_height}+{x}+{y}")
+
+        # Create a custom style for buttons
+        style = ttk.Style()
+        style.theme_use("clam")  # Use a pre-defined theme as a base
+
+        # Configure buttons to be slightly bigger with bigger text
+        style.configure("TButton", font=("Helvetica", 10, "bold"), padding=4)
+
+        # Label for slogan
+        slogan_label = tk.Label(self, text="TT Corp", font=("Stencil Std", 36, "bold"), fg="#1b3a81")
+        slogan_label.grid(row=0, column=0, padx=20, pady=20, columnspan=2, sticky="nsew")
+
         # Create username label and entry
         self.username_label = tk.Label(self, text="Username:")
-        self.username_label.pack(padx=10, pady=5)
+        self.username_label.grid(row=1, column=0, padx=5, pady=5, sticky="e")
         self.username_entry = tk.Entry(self)
-        self.username_entry.pack(padx=10, pady=5)
+        self.username_entry.grid(row=1, column=1, padx=5, pady=5, sticky="ew")
 
         # Create password label and entry
         self.password_label = tk.Label(self, text="Password:")
-        self.password_label.pack(padx=10, pady=5)
+        self.password_label.grid(row=2, column=0, padx=5, pady=5, sticky="e")
         self.password_entry = tk.Entry(self, show="*")
-        self.password_entry.pack(padx=10, pady=5)
+        self.password_entry.grid(row=2, column=1, padx=5, pady=5, sticky="ew")
 
         # Create login button
-        self.login_button = tk.Button(self, text="Login", command=self.login)
-        self.login_button.pack(padx=10, pady=5)
+        self.login_button = ttk.Button(self, text="Login", command=self.login)
+        self.login_button.grid(row=3, column=1, padx=5, pady=5, sticky="nsew")
 
     def login(self):
+        # Retrieve username and password
         username = self.username_entry.get()
         password = self.password_entry.get()
-        print(username)
-        print(password)
         l = Login()
-        validation = l.check_password(username, password)
-        print(validation)
-        if validation == True:
+        # Check users credentials
+        validation = l.sign_in(username, password)
+        if validation:
             self.withdraw()  # Hide the login window upon successful login
             self.destroy()  # Close the login window
-            MainPage(self.master)  # Open the main page
+            main_page = MainPage(self.master)  # Open the main page
+            main_page.state('zoomed')
             Login.current_user = username
-
         else:
             messagebox.showerror("Login", "Invalid username or password")
 
 
+class NewUserPopup(tk.Toplevel):
+    def __init__(self, master):
+        super().__init__(master)
+        self.title("New User")
+        # Create a custom style for buttons
+        style = ttk.Style()
+        style.theme_use("clam")  # Use a pre-defined theme as a base
+
+        # Labels and entry boxes for user details
+        self.login_username_label = tk.Label(self, text="Username:").grid(row=0, column=0, padx=5, pady=5)
+        self.username_entry = tk.Entry(self)
+        self.username_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        tk.Label(self, text="Password:").grid(row=1, column=0, padx=5, pady=5)
+        self.password_entry = tk.Entry(self, show="*")
+        self.password_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        tk.Label(self, text="Email:").grid(row=2, column=0, padx=5, pady=5)
+        self.email_entry = tk.Entry(self)
+        self.email_entry.grid(row=2, column=1, padx=5, pady=5)
+
+        self.is_admin_var = tk.IntVar()
+        self.admin_checkbox = tk.Checkbutton(self, text="Admin", variable=self.is_admin_var)
+        self.admin_checkbox.grid(row=3, column=0, columnspan=2, padx=5, pady=5)
+
+        # Button to create the new user
+        self.create_button = ttk.Button(self, text="Create User", command=self.create_user)
+        self.create_button.grid(row=4, columnspan=2, padx=5, pady=10)
+
+    def create_user(self):
+        # Retrieve user details from entry boxes
+        username = self.username_entry.get()
+        password = self.password_entry.get()
+        email = self.email_entry.get()
+        is_admin = bool(self.is_admin_var.get())
+        try:
+            l = Login()
+            login_attempt = l.create_login(username, password, email, is_admin)
+            print(login_attempt)
+            if login_attempt is None:
+                self.destroy()
+            else:
+                messagebox.showinfo('Invalid details', login_attempt)
+        except Exception as e:
+            print('Create User error', e)
+        # Close the popup window after creating the user
+
+
 class MainPage(tk.Toplevel):
     def __init__(self, master=None):
+        # Create a style
+        style = ttk.Style()
+        style.theme_use("clam")
+
+
+        # Configure buttons to be slightly bigger with bigger text
+        style.configure("TButton", font=("Helvetica", 10, "bold"), padding=4)
+
+        # Configure the style for the notebook and tabs
+        style.configure("Custom.TNotebook", background="white")
+        style.configure("Custom.TNotebook.Tab", background="white", padding=[10, 5], font=("Helvetica", 12))
+
+
+        # Configure the style of all treeview headings
+        style.configure("Treeview.Heading", font=("Helvetica", 10))
+        # Set height for treeview rows
+        style.configure("Treeview", rowheight=30, font=("Helvetica", 12))
+
         super().__init__(master=None)
         self.title("Project Manager")
         self.geometry("800x600")  # Adjust the initial window size as needed
@@ -85,51 +157,71 @@ class MainPage(tk.Toplevel):
         self.file_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="File", menu=self.file_menu)
         self.file_menu.add_command(label="Switch User", command=self.switch_user)
-        self.file_menu.add_command(label="New User", command=self.new_user)
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.exit_application)
 
-        # Bind window close to exit_application method
+        # Check if the current user is an admin and hide the admin menu if not
+        print('current user')
+        print(Login.current_user)
+        if self.is_admin(Login.current_user):
+            # Create Admin menu
+            self.admin_menu = tk.Menu(self.menu_bar, tearoff=0)
+            self.menu_bar.add_cascade(label="Admin", menu=self.admin_menu)
+            self.admin_menu.add_command(label="New User", command=self.open_new_user_popup)
+
+        # Bind window close event to exit_application method
         self.protocol("WM_DELETE_WINDOW", self.exit_application)
 
         # Create the notebook
-        self.tab_control = ttk.Notebook(self)
-        self.tab_control.pack(expand=True, fill='both')
+        self.tab_control = ttk.Notebook(self, style="Custom.TNotebook")
+        self.tab_control.pack(expand=True, fill=tk.BOTH)
 
         # Create the tabs
-        self.ListTab = ttk.Frame(self.tab_control)
-        self.tab_control.add(self.ListTab, text='List')
+        self.ListTab = tk.Frame(self.tab_control, background='white')
+        self.tab_control.add(self.ListTab, text='Overview')
 
-        self.TasksTab = ttk.Frame(self.tab_control)
+        self.TasksTab = tk.Frame(self.tab_control, background='white')
         self.tab_control.add(self.TasksTab, text='Tasks')
 
-        self.TimelineTab = ttk.Frame(self.tab_control)
+        self.TimelineTab = tk.Frame(self.tab_control, background='white')
         self.tab_control.add(self.TimelineTab, text='Timeline')
 
-        self.Admin = ttk.Frame(self.tab_control)
-        self.tab_control.add(self.Admin, text='Admin')
+        ####------------------ LIST/ OVERVIEW TAB --------------------------###
 
-        ####------------------ LIST TAB --------------------------###
+        # Create frame for buttons and search box
+        self.button_search_frame = tk.Frame(self.ListTab, background="white")
+        self.button_search_frame.grid(row=0, column=0, padx=10, pady=10, sticky="w")
 
-        # Create buttons in the ListTab
-        self.add_project_button = tk.Button(self.ListTab, text=" + New Project ", command=self.add_project_popup)
-        self.add_project_button.grid(row=0, column=0, padx=2, pady=5, sticky="w")
+        # Create buttons
+        self.add_project_button = ttk.Button(self.button_search_frame, text="+ New Project",
+                                             command=self.add_project_popup, style="Bold.TButton")
+        self.add_project_button.grid(row=0, column=0, padx=(0, 10), pady=5)
 
-        self.edit_project_button = tk.Button(self.ListTab, text=" Edit Project ", command=self.edit_project_popup)
-        self.edit_project_button.grid(row=0, column=1, padx=2, pady=5, sticky="w")
+        self.edit_project_button = ttk.Button(self.button_search_frame, text="Edit Project",
+                                              command=self.edit_project_popup)
+        self.edit_project_button.grid(row=0, column=1, padx=(0, 10), pady=5)
 
-        # self.show_name_button = tk.Button(self.ListTab, text=" Add / Assign Tasks ", command=self.add_tasks_popup)
-        # self.show_name_button.grid(row=0, column=1, padx=2, pady=5)
+        # Create frame for search box and label
+        self.search_frame = tk.Frame(self.button_search_frame, background="white")
+        self.search_frame.grid(row=0, column=2, padx=(50, 10), pady=5, sticky="w")
 
-        # Create Search bar in ListTab
-        self.search_label = tk.Label(self.ListTab, text="Search:")
-        self.search_label.grid(row=0, column=2, padx=2, pady=5, sticky="e")
-        self.search_entry = tk.Entry(self.ListTab)
-        self.search_entry.grid(row=0, column=3, padx=2, pady=5, sticky="e")
+        # Create search box label
+        self.search_label = tk.Label(self.search_frame, text="Search:", font=("TkDefaultFont", 12), background="white")
+        self.search_label.grid(row=0, column=0, padx=(0, 5))
+
+        # Create search box
+        self.search_entry = tk.Entry(self.search_frame, font=("TkDefaultFont", 12))
+        self.search_entry.grid(row=0, column=1, padx=(0, 5))
         self.search_entry.bind("<KeyRelease>", self.search_projects)
 
+        # Create frame for project tree and configure row and column weight
+        self.project_tree_frame = tk.Frame(self.ListTab)
+        self.project_tree_frame.grid(row=1, column=0,  padx=10, pady=10, sticky="nsew")
+        self.project_tree_frame.grid_rowconfigure(0, weight=1)
+        self.project_tree_frame.grid_columnconfigure(0, weight=1)
+
         # Create table to display all projects
-        self.project_tree = ttk.Treeview(self.ListTab, columns=(
+        self.project_tree = ttk.Treeview(self.project_tree_frame, columns=(
             "Project Name", "Description", "Owner", "Status", "Start Date", "End Date", "Progress"))
         self.project_tree['show'] = 'headings'
 
@@ -147,32 +239,40 @@ class MainPage(tk.Toplevel):
                                   command=lambda: self.treeview_sort_column(self.project_tree, "End Date", False))
         self.project_tree.heading("Progress", text="Progress %",
                                   command=lambda: self.treeview_sort_column(self.project_tree, "Progress", False))
-
-        self.project_tree.grid(row=1, column=0, sticky="nsew", columnspan=4)
+        self.project_tree.column("Project Name", width=200, )
+        self.project_tree.column("Description", width=400, )
+        self.project_tree.grid(row=0, column=0, sticky="nsew")
         self.project_tree.bind("<<TreeviewSelect>>", self.update_project_members_treeview_bind)
 
-        self.scrollbar = ttk.Scrollbar(self.ListTab, orient="vertical", command=self.project_tree.yview)
-        self.scrollbar.grid(row=1, column=4, sticky='ns')
+
+        self.scrollbar = ttk.Scrollbar(self.project_tree_frame, orient="vertical", command=self.project_tree.yview)
+        self.scrollbar.grid(row=0, column=1, sticky='ns')
         self.project_tree.configure(yscrollcommand=self.scrollbar.set)
 
+        # Create frame for project members tree and configure row weight
+        self.project_members_tree_frame = tk.Frame(self.ListTab)
+        self.project_members_tree_frame .grid(row=1, column=1,  padx=10, pady=10, sticky="nsew")
+        self.project_members_tree_frame.grid_rowconfigure(0, weight=1)
+        self.project_members_tree_frame.grid_columnconfigure(0, weight=1)
+
         # Project Members treeview
-        self.project_members_tree = ttk.Treeview(self.ListTab, columns=("Username"))
+        self.project_members_tree = ttk.Treeview(self.project_members_tree_frame, columns=("Username"))
         self.project_members_tree.heading("Username", text="Project Members")
         self.project_members_tree['show'] = 'headings'
-        self.project_members_tree.grid(row=1, column=5, sticky="nsew", columnspan=2)
+        self.project_members_tree.grid(row=0, column=0, sticky="nsew", columnspan = 2)
         # self.grid_rowconfigure(0, weight=1)
         # self.grid_columnconfigure(0, weight=1)
-        self.project_members_tree_scrollbar = ttk.Scrollbar(self.ListTab, orient="vertical",
+        self.project_members_tree_scrollbar = ttk.Scrollbar(self.project_members_tree_frame, orient="vertical",
                                                             command=self.project_members_tree.yview)
-        self.project_members_tree_scrollbar.grid(row=1, column=7, sticky='ns')
+        self.project_members_tree_scrollbar.grid(row=0, column=2, sticky='ns')
         self.project_members_tree.configure(yscrollcommand=self.project_members_tree_scrollbar.set)
 
         # Add buttons to add/remove members
-        self.add_member_button = tk.Button(self.ListTab, text=" Add Members ", command=self.add_member_popup)
-        self.add_member_button.grid(row=2, column=5, padx=2, pady=5, sticky="w")
+        self.add_member_button = ttk.Button(self.project_members_tree_frame, text=" Add ", command=self.add_member_popup)
+        self.add_member_button.grid(row=1, column=0, padx=2, pady=5, sticky="ew")
 
-        self.remove_member_button = tk.Button(self.ListTab, text=" Remove Member ", command = self.remove_member_from_project)
-        self.remove_member_button.grid(row=2, column=6, padx=2, pady=5, sticky="w")
+        self.remove_member_button = ttk.Button(self.project_members_tree_frame, text=" Remove ", command = self.remove_member_from_project)
+        self.remove_member_button.grid(row=1, column=1, padx=2, pady=5, sticky="ew")
 
         self.ListTab.rowconfigure(1, weight=1)
         self.ListTab.columnconfigure(0, weight=1)
@@ -182,32 +282,44 @@ class MainPage(tk.Toplevel):
 
         ####------------------ TASKS TAB --------------------------###
 
-        self.add_task_button = tk.Button(self.TasksTab, text=" + New Task ", command=self.add_tasks_popup)
-        self.add_task_button.grid(row=0, column=0, padx=0, pady=5, sticky="w")
-
-        self.edit_task_button = tk.Button(self.TasksTab, text=" Edit Task ", command=self.edit_task_popup)
-        self.edit_task_button.grid(row=0, column=1, padx=0, pady=5, sticky="w")
+        # Create frame for buttons
+        self.button_project_frame = tk.Frame(self.TasksTab, background="white")
+        self.button_project_frame.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        self.button_project_frame.grid_rowconfigure(0, weight=1)
+        self.button_project_frame.grid_columnconfigure(0, weight=1)
 
         # Create buttons in tasks tab
-        tk.Label(self.TasksTab, text=" Select Project: ").grid(row=0, column=4, padx=5, pady=5)
+        self.add_task_button = ttk.Button(self.button_project_frame, text=" + New Task ", command=self.add_tasks_popup)
+        self.add_task_button.grid(row=0, column=0, padx=(0, 10), pady=5, sticky="w")
 
-        self.tasks = ttk.Combobox(self.TasksTab, state="readonly")
-        self.tasks.grid(row=0, column=5, padx=0, pady=5, sticky="e")
+        self.edit_task_button = ttk.Button(self.button_project_frame, text=" Edit Task ", command=self.edit_task_popup)
+        self.edit_task_button.grid(row=0, column=1, padx=(0, 10), pady=5, sticky="w")
+
+        # Create dropdown to select a project
+        self.project_dropdown_label = tk.Label(self.button_project_frame, text=" Project: ", font=("Helvetica", 12), background="white")
+        self.project_dropdown_label.grid(row=0, column=2, padx=(50,5), pady=5)
+        self.tasks = ttk.Combobox(self.button_project_frame, state="readonly", width=20, font=('Arial', 16))
+        self.tasks.grid(row=0, column=3, padx=0, pady=5, sticky="w")
         self.tasks.bind("<<ComboboxSelected>>", self.update_task_treeview)
-        # self.tasks = self.update_project_list()
 
-        # self.assign_task_button = tk.Button(self.TasksTab, text=" Assign Task ", command=self.assign_task_popup)
-        # self.assign_task_button.grid(row=0, column=4, padx=2, pady=5)
+        # Configure row and column weights for the task_tree_frame
+        self.TasksTab.grid_rowconfigure(1, weight=1)
+        self.TasksTab.grid_columnconfigure(0, weight=1)
 
-        # Create table to display all TASKS
-        self.task_tree = ttk.Treeview(self.TasksTab, columns=(
+        # Create frame for task tree and configure row and column weight
+        self.task_tree_frame = tk.Frame(self.TasksTab)
+        self.task_tree_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.task_tree_frame.grid_rowconfigure(0, weight=1)
+        self.task_tree_frame.grid_columnconfigure(0, weight=1)
+
+        # Create table to display tasks related to chosen project
+        self.task_tree = ttk.Treeview(self.task_tree_frame, columns=(
             "Task ID", "Task Name", "Description", "Assigned", "Status", "Start Date", "End Date", "Progress",
             "Comments"))
         self.task_tree['show'] = 'headings'
 
         self.task_tree.heading("Task ID", text="Task ID",
                                command=lambda: self.treeview_sort_column(self.task_tree, "Task ID", False))
-        self.task_tree.column("Task ID", width=50)
         self.task_tree.heading("Task Name", text="Task Name",
                                command=lambda: self.treeview_sort_column(self.task_tree, "Task Name", False))
         self.task_tree.heading("Description", text="Description",
@@ -224,38 +336,131 @@ class MainPage(tk.Toplevel):
                                command=lambda: self.treeview_sort_column(self.task_tree, "Progress", False))
         self.task_tree.heading("Comments", text="Owner's Comments",
                                command=lambda: self.treeview_sort_column(self.task_tree, "Comments", False))
+        self.task_tree.column("Task ID", width=80)
         self.task_tree.column("Progress", width=100)
-        self.task_tree.grid(row=1, column=0, sticky="nsew", columnspan=12)
+        self.task_tree.grid(row=0, column=0, sticky="nsew")
 
-        self.scrollbar = ttk.Scrollbar(self.ListTab, orient="vertical", command=self.task_tree.yview)
-        self.scrollbar.grid(row=1, column=12, sticky='nsew')
+        self.scrollbar = ttk.Scrollbar(self.task_tree_frame, orient="vertical", command=self.task_tree.yview)
+        self.scrollbar.grid(row=0, column=1, sticky='ns')
         self.task_tree.configure(yscrollcommand=self.scrollbar.set)
 
-        self.TasksTab.rowconfigure(1, weight=1)
-        self.TasksTab.columnconfigure(0, weight=1)
-        self.TasksTab.columnconfigure(1, weight=1)
 
         ####------------------ TIMELINE TAB --------------------------###
+
+        # Configure row weights of TimelineTab to allow vertical stretching for both rows
+        self.TimelineTab.rowconfigure(1, weight=1)
+        self.TimelineTab.columnconfigure(0, weight=1)
+
+        # Create frame for buttons and dropdown
+        self.add_message_project_frame = tk.Frame(self.TimelineTab, background="white")
+        self.add_message_project_frame.grid(row=0, column=0, padx=10, pady=10, sticky="w")
+        self.add_message_project_frame.grid_rowconfigure(0, weight=1)
+        self.add_message_project_frame.grid_columnconfigure(0, weight=1)
+
+        # Create buttons in timeline tab
+        self.add_message_button = ttk.Button(self.add_message_project_frame, text=" + New Message ",
+                                             command=self.add_timeline_msg_popup)
+        self.add_message_button.grid(row=0, column=0, padx=(0, 10), pady=5, sticky="w")
+
+
         # Create project dropdown list to choose project
-        tk.Label(self.TimelineTab, text=" Select Project: ").grid(row=0, column=2, padx=5, pady=5)
-        self.timeline_project_list = ttk.Combobox(self.TimelineTab, state="readonly")
-        self.timeline_project_list.grid(row=0, column=3, padx=0, pady=5, sticky="e")
+        self.timeline_project_label = tk.Label(self.add_message_project_frame, text=" Project: ", font=("Helvetica", 12), background="white")
+        self.timeline_project_label.grid(row=0, column=2, padx=(50,0), pady=5)
+        self.timeline_project_list = ttk.Combobox(self.add_message_project_frame, state="readonly", width=20, font=('Arial', 16))
+        self.timeline_project_list.grid(row=0, column=3, padx=(0,10), pady=5, sticky="e")
         self.timeline_project_list.bind("<<ComboboxSelected>>", self.create_timeline_plot)
 
+        # Create frame for project messages treeview
+        self.add_message_project_frame = tk.Frame(self.TimelineTab, background="white")
+        self.add_message_project_frame.grid(row=1, column=0, padx=10, pady=10, sticky="nsew")
+        self.add_message_project_frame.grid_rowconfigure(0, weight=1)
+        self.add_message_project_frame.grid_columnconfigure(0, weight=1)
+
         # Create treeview to show project messages along with its timeline
-        self.project_messages_treeview = ttk.Treeview(self.TimelineTab, columns=('Username', 'Message', 'Date Added'))
-        self.project_messages_treeview.grid(row=1, column=13, padx=5, pady=5, sticky="nsew")
+        self.project_messages_treeview = ttk.Treeview(self.add_message_project_frame, columns=('Username', 'Message', 'Date Added'))
+        self.project_messages_treeview.grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
         self.project_messages_treeview['show'] = 'headings'
         self.project_messages_treeview.heading('Username', text='Username')
         self.project_messages_treeview.heading('Message', text='Message')
         self.project_messages_treeview.heading('Date Added', text='Date Posted')
 
-        self.create_timeline_plot()
+        self.project_messages_scrollbar = ttk.Scrollbar(self.add_message_project_frame, orient="vertical", command=self.project_messages_treeview.yview)
+        self.project_messages_scrollbar.grid(row=0, column=1, sticky='ns')
+        self.project_messages_treeview.configure(yscrollcommand=self.project_messages_scrollbar.set)
 
+        # Create frame for timeline chart
+        self.timeline_frame = tk.Frame(self.add_message_project_frame, background="white")
+        self.timeline_frame.grid(row=0, column=2, padx=5, pady=5, sticky="nsew")
+        self.timeline_frame.grid_rowconfigure(0, weight=1)
+        self.timeline_frame.grid_columnconfigure(0, weight=1)
+        self.timeline_frame.grid_columnconfigure(1, weight=1)
+        self.create_timeline_plot()
         self.update_project_list()
 
+    def create_timeline_plot(self, *event):
+        # Retrieve project selected in timeline tab
+        selected_project = self.timeline_project_list.get()
+        p = Project()
+        fig = p.create_timeline(selected_project)
+        canvas = FigureCanvasTkAgg(fig, master=self.timeline_frame)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+
+        self.update_project_messages_treeview()
+
+    def add_timeline_msg_popup(self):
+        def validate_max_characters(text):
+            # Ensures entry box is limited to 30 characters
+            if len(text) <= 30:
+                return True
+            else:
+                return False
+        selected_project = self.timeline_project_list.get()
+        # Check project has been selected
+        if selected_project:
+
+            popup = tk.Toplevel(self)
+            popup.title("Add Message")
+
+            # Add labels and entry boxes - project name is disabled
+            tk.Label(popup, text="Project Name:").grid(row=0, column=0, padx=5, pady=5)
+            self.project_name = tk.Entry(popup)
+            self.project_name.insert(0, selected_project)
+            self.project_name.grid(row=0, column=1, padx=5, pady=5)
+            self.project_name.config(state=tk.DISABLED)
+
+
+            validation = self.register(validate_max_characters)
+
+            # Message is limited to 30 characters
+            tk.Label(popup, text="Message (max 30 characters):").grid(row=1, column=0, padx=5, pady=5)
+            self.timeline_msg_entry = tk.Entry(popup, validate="key", validatecommand=(validation, "%P"))
+            self.timeline_msg_entry.grid(row=1, column=1, padx=5, pady=5)
+
+            self.add_message_button = ttk.Button(popup, text=" OK ", command=self.validate_timeline_msg)
+            self.add_message_button.grid(row=2, column=1, padx=0, pady=5, sticky="w")
+        else:
+            messagebox.showinfo('Missing Information', 'Please select a project')
+
+
+    def validate_timeline_msg(self):
+        messages = ["Are you sure you want to add this message?","Messages cannot be removed once created"]
+        response = messagebox.askquestion("Confirm Changes", "\n".join(messages))
+        if response == 'yes':
+            try:
+                comment = self.timeline_msg_entry.get()
+                print(comment)
+                project_name = self.project_name.get()
+                print(project_name)
+                p = Project()
+                p.create_project_message(project_name, comment)
+                self.update_project_messages_treeview()
+                self.create_timeline_plot()
+            except Exception as e:
+                print('Error validating timeline message', e)
+
     def remove_member_from_project(self):
-        #print(Login.current_user)
+
         current_project_selected = self.project_tree.focus()
         if not current_project_selected:
             messagebox.showerror("Error", "Please select a Project.")
@@ -278,19 +483,35 @@ class MainPage(tk.Toplevel):
         except Exception as e:
             messagebox.showerror("Error removing member", f"An error occurred: {str(e)}")
 
-    def switch_user(self):
-        # Add functionality for switching user here
-        messagebox.showinfo("Switch User", "Switch User option selected.")
+    def is_admin(self, username):
+        l = Login()
+        print(f'is admin {username}')
+        access = l.is_admin(username)
 
-    def new_user(self):
-        # Add functionality for creating a new user here
-        messagebox.showinfo("New User", "New User option selected.")
+        return access
+
+    def switch_user(self):
+        # Close the main page
+        self.destroy()
+
+        # Open the login screen
+        login_screen = LoginPage(self.master)
+        login_screen.mainloop()
+
+    def open_new_user_popup(self):
+        # Open the New User popup
+        new_user_popup = NewUserPopup(self)
+        new_user_popup.mainloop()
+
+
 
     def exit_application(self):
+        # Close the app and stop running in IDE
         self.master.destroy()
         self.quit()
 
     def add_member_popup(self):
+        # Check if user has selected a project
         current_project_selected = self.project_tree.focus()
         if not current_project_selected:
             messagebox.showerror("Error", "Please select a Project.")
@@ -321,7 +542,7 @@ class MainPage(tk.Toplevel):
         self.unassigned_members_listbox['yscrollcommand'] = scrollbar.set
         scrollbar.grid(row=1, column=2, sticky='ns')
 
-        add_member_button = tk.Button(popup, text=" Assign to Project ", command=lambda: self.add_members_to_project
+        add_member_button = ttk.Button(popup, text=" Assign to Project ", command=lambda: self.add_members_to_project
         (project_name,
          popup))
         add_member_button.grid(row=2, column=1, padx=2, pady=5, sticky="w")
@@ -378,8 +599,17 @@ class MainPage(tk.Toplevel):
         self.project_name_entry.insert(0, selected_project["values"][0])
         self.project_name_entry.grid(row=0, column=1, padx=5, pady=5)
 
+        # Create status entry options for standard users and admin users
+        # Only admins can mark a project as completed
+        admin_values = ["In-Progress", "Completed"]
+        standard_user_values = ["In-Progress"]
+
         tk.Label(popup, text="Status:").grid(row=1, column=0, padx=5, pady=5)
-        self.status_entry = ttk.Combobox(popup, values=["In-Progress", "Completed"], state="readonly")
+        # check if user is admin
+        if self.is_admin(Login.current_user):
+            self.status_entry = ttk.Combobox(popup, values=admin_values, state="readonly")
+        else:
+            self.status_entry = ttk.Combobox(popup, values=standard_user_values, state="readonly")
         self.status_entry.set(selected_project["values"][3])
         self.status_entry.grid(row=1, column=1, padx=5, pady=5)
 
@@ -394,22 +624,7 @@ class MainPage(tk.Toplevel):
         self.owner_entry.set(selected_project["values"][2])
         self.owner_entry.grid(row=3, column=1, padx=5, pady=5)
 
-        # # Get project members for project
-        # self.project_members = self.get_project_members(project_name)
-        # tk.Label(popup, text="Project Members:").grid(row=5, column=0, padx=5, pady=5)
-        # self.edit_members_listbox = tk.Listbox(popup, height=10, width=30, selectmode=tk.MULTIPLE)
-        # for mem in self.project_members:
-        #     self.edit_members_listbox.insert(tk.END, mem)
-        # self.edit_members_listbox.grid(row=6, column=1, padx=5, pady=5)
-        # scrollbar = tk.Scrollbar(
-        #     popup,
-        #     orient=tk.VERTICAL,
-        #     command=self.edit_members_listbox.yview)
-        # self.edit_members_listbox['yscrollcommand'] = scrollbar.set
-        # scrollbar.grid(row=7, column=2, sticky='ns')
-
-        # Button to save new project
-        save_button = tk.Button(popup, text="Save",
+        save_button = ttk.Button(popup, text="Save",
                                 command=lambda: self.save_edited_project(self.project_name_entry.get(),
                                                                          self.status_entry.get(),
                                                                          self.description_entry.get("1.0", "end-1c"),
@@ -421,14 +636,14 @@ class MainPage(tk.Toplevel):
 
     def save_edited_project(self, project_name, status, description, owner, old_project_name, current_project_selected,
                             popup):
+        # Check user has entered all details
         if not (project_name and status and description and owner):
             messagebox.showerror("Error", "Please fill in all fields.")
             return
+        # Confirm changes
         make_changes = messagebox.askquestion("Confirm Changes", "Are you sure you want to make these changes?")
-
         if make_changes == 'yes':
             try:
-
                 p = Project()
                 p.edit_project(old_project_name, project_name, owner, status, description)
                 if status == 'Completed':
@@ -437,38 +652,20 @@ class MainPage(tk.Toplevel):
                         e.send_project_completed_emails(project_name)
                     except Exception as e:
                         print('Error sending project complete emails', e)
-                # all_members = []
-                # for i in self.edit_members_listbox.curselection():
-                #     x = self.edit_members_listbox.get(i)
-                #     all_members.append(x)
-                # try:
-                #     p = Project()
-                #     p.add_members(project_name, all_members)
-                # except Exception as e:
-                #     messagebox.showerror("Error", f"An error occurred: {str(e)}")
-                # try:
-                #     p.send_project_emails(project_name)
-                # except Exception as e:
-                #     messagebox.showerror("Error", f"An error occurred: {str(e)}")
                 popup.destroy()
+                # Reload projects in the treeview
                 self.project_tree.focus(current_project_selected)
                 self.project_tree.selection_set(current_project_selected)
                 self.update_project_treeview()
-                # self.reload_project_members_treeview
-                # self.update_project_list()
-                # p = Project()
-                # p.update_percentage_complete(project_name)
             except Exception as e:
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
     def update_project_messages_treeview(self, *event):
+        # Check project is selected
         selected_project = self.timeline_project_list.get()
         if selected_project:
-
             p = Project()
             project_messages = p.get_project_messages(selected_project)
-            # print(selected_project)
-
             self.project_messages_treeview.delete(*self.project_messages_treeview.get_children())
             try:
                 for msg in project_messages:
@@ -476,15 +673,7 @@ class MainPage(tk.Toplevel):
             except Exception as e:
                 print("Error updating project members treeview:", e)
 
-    def create_timeline_plot(self, *event):
-        # Retrieve project selected in timeline tab
-        selected_project = self.timeline_project_list.get()
-        p = Project()
-        fig = p.create_timeline(selected_project)
-        canvas = FigureCanvasTkAgg(fig, master=self.TimelineTab)
-        canvas.draw()
-        canvas.get_tk_widget().grid(row=1, column=0, padx=0, pady=5, sticky="e", columnspan=6)
-        self.update_project_messages_treeview()
+
 
     def reload_project_members_treeview(self, project_name):
         # Used after project is edited as need to get project name to stop it deselecting in treeview
@@ -619,7 +808,7 @@ class MainPage(tk.Toplevel):
         scrollbar.grid(row=9, column=2, sticky='ns')
 
         # Button to edit task
-        self.save_button = tk.Button(popup, text="Save Changes",
+        self.save_button = ttk.Button(popup, text="Save Changes",
                                      command=lambda: self.save_edit_task(self.task_name_entry.get(),
                                                                          task_id,
                                                                          self.task_status_entry.get(),
@@ -768,7 +957,7 @@ class MainPage(tk.Toplevel):
         scrollbar.grid(row=4, column=2, sticky='ns')
 
         # Button to save new project
-        self.save_button = tk.Button(popup, text="Save",
+        self.save_button = ttk.Button(popup, text="Save",
                                      command=lambda: self.save_new_project(self.project_name_entry.get(),
                                                                            self.status_entry.get(),
                                                                            self.description_entry.get("1.0", "end-1c"),
@@ -812,7 +1001,7 @@ class MainPage(tk.Toplevel):
         scrollbar.grid(row=4, column=2, sticky='ns')
 
         # Button to save new task
-        self.save_button = tk.Button(popup, text="Save",
+        self.save_button = ttk.Button(popup, text="Save",
                                      command=lambda: self.save_new_task(self.task_name_entry.get(),
                                                                         self.selected_project,
                                                                         self.task_status_entry.get(),
@@ -852,8 +1041,8 @@ class MainPage(tk.Toplevel):
             return
         try:
 
-            t = TeamMember()
-            t.create_project(project_name, owner, status, description)
+            p = Project()
+            p.create_project(project_name, owner, status, description)
             messagebox.showinfo("Success", "Project added successfully!")
             # self.selection = self.members_listbox.curselection()
             # print(self.selection)
@@ -862,7 +1051,7 @@ class MainPage(tk.Toplevel):
                 x = self.members_listbox.get(i)
                 all_members.append(x)
             try:
-                p = Project()
+                #p = Project()
                 p.add_members(project_name, all_members)
             except Exception as e:
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")

@@ -1,3 +1,5 @@
+import re
+
 import Login
 from TeamMember import TeamMember
 from Login import Login
@@ -38,25 +40,30 @@ class SuperAdmin(TeamMember):
         conn.commit()
         conn.close()
 
-    def create_login(self, username, password, is_admin):
-        l = Login()
-        if l.check_username_distinct(username):
-            pass
-        else:
-            print('username taken')
-            return False
-        conn = sqlite3.connect("project.db")
-        cur = conn.cursor()
-
-        hashable_password = password.encode('utf-8')
-        hashed_password = bcrypt.hashpw(hashable_password, bcrypt.gensalt())
-
-
-        login_details = (username, hashed_password, is_admin)
-        sql = ''' INSERT INTO Login(USERNAME, PASSWORD, ADMIN)
-                VALUES(?,?,?) '''
-        cur.execute(sql, login_details)
-        print(pd.read_sql("SELECT * FROM Login", conn))
-        conn.commit()
-        conn.close()
+    # def create_login(self, username, password,  email, is_admin):
+    #
+    #     # Validate email
+    #     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+    #         print("Invalid email format")
+    #         return False
+    #     # Confirm username is not taken
+    #     l = Login()
+    #     if l.check_username_distinct(username):
+    #         pass
+    #     else:
+    #         print('username taken')
+    #         return False
+    #     conn = sqlite3.connect("project.db")
+    #     cur = conn.cursor()
+    #
+    #     hashable_password = password.encode('utf-8')
+    #     hashed_password = bcrypt.hashpw(hashable_password, bcrypt.gensalt())
+    #
+    #     login_details = (username, hashed_password, is_admin, email)
+    #     sql = ''' INSERT INTO Login(USERNAME, PASSWORD, ADMIN, EMAIL)
+    #             VALUES(?,?,?,?) '''
+    #     cur.execute(sql, login_details)
+    #     print(pd.read_sql("SELECT * FROM Login", conn))
+    #     conn.commit()
+    #     conn.close()
 

@@ -12,9 +12,9 @@ if __name__ == '__main__':
     sa.set_project_status('Run Forrest Run', 'In-Progress')
     sa.allocate_task(1, 'Kate Marten')
     #sa.edit_task(1, 'build a lego house', 'i want a blue house','complete')
-    sa.create_login('Joe Bloggs', 'password', True)
+
     print("creating new user")
-    sa.create_login('a', 'a', True)
+    #sa.create_login('a', 'a', 'a"a.com', True)
     sa.change_password('Joe Bloggs', 'password', 'password999')
     l = Login()
     l.sign_in('a', 'a')
@@ -72,3 +72,5 @@ if __name__ == '__main__':
     # e.send_project_emails('myProject')
     #e.send_project_completed_emails('myProject')
     #sa.create_project("Find the holy grail", "Daisy Gospel", "Not Started", "Defeat the nazis and find the holy grail. Choose wisely" )
+    l.create_login('Daisy', 'pass', 'Daisy@email.com', False)
+    p.set_project_start_date('hello')

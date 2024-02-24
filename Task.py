@@ -146,18 +146,22 @@ class Task:
         conn.commit()
         conn.close()
 
-    def add_comment(self, comment, taskID, username):
+    def add_comment(self, comment, task_id, username):
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
 
-        new_comment = (comment, taskID, username)
+        new_comment = (comment, task_id, username)
         sql = ''' INSERT INTO TaskMessages (MESSAGE, TASK_ID, USERNAME)
                                 VALUES(?,?,?) '''
-        cur.execute(sql, new_comment)
-        print('TASK MESSAGE  ADD')
-        print(pd.read_sql("SELECT * FROM TaskMessages", conn))
-        conn.commit()
-        conn.close()
+        try:
+            cur.execute(sql, new_comment)
+            print('TASK MESSAGE  ADD')
+            print(pd.read_sql("SELECT * FROM TaskMessages", conn))
+            conn.commit()
+            conn.close()
+        except Exception as e:
+            print('Error adding task comment', e)
+            return False
 
     def get_comments(self):
         pass
@@ -170,7 +174,7 @@ class Task:
                         t.DESCRIPTION, 
                         t.ASSIGNED_TO, 
                         t.STATUS, 
-                        t.START_DATE, 
+                        strftime('%Y-%m-%d %H:%M:%S', t.START_DATE) AS START_DATE, 
                         t.END_DATE, 
                         t.PERCENTAGE_COMPLETE, 
                         t.COMMENT
