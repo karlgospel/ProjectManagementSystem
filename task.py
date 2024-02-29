@@ -1,12 +1,24 @@
 import sqlite3
-from email.mime.text import MIMEText
-from tkinter import messagebox
-
 import pandas as pd
 from datetime import datetime
+from project import Project
+
 
 class Task:
 
+    def create_task(self, project_name, task_name, description, status, assigned):
+        conn = sqlite3.connect("project.db")
+        cur = conn.cursor()
+        p = Project()
+        project_id = p.get_project_id(project_name)
+        task = (project_id, description, status, 0, assigned, task_name)
+        sql = ''' INSERT INTO Tasks (PROJECT_ID, DESCRIPTION, STATUS, PERCENTAGE_COMPLETE, ASSIGNED_TO, TASK_NAME)
+                        VALUES(?,?,?,?,?,?) '''
+        cur.execute(sql, task)
+        print('PROJECT  create')
+        print(pd.read_sql("SELECT * FROM Tasks", conn))
+        conn.commit()
+        conn.close()
 
     def get_task(self, taskID):
         conn = sqlite3.connect("project.db")
@@ -163,8 +175,6 @@ class Task:
             print('Error adding task comment', e)
             return False
 
-    def get_comments(self):
-        pass
 
     def get_all_tasks(self, projectName):
         conn = sqlite3.connect("project.db")
@@ -186,17 +196,6 @@ class Task:
         conn.commit()
         conn.close()
         return tasks
-
-    def remove_comment(self, commentID):
-        conn = sqlite3.connect("project.db")
-        conn.execute("PRAGMA foreign_keys = ON")
-        cur = conn.cursor()
-        sql = ''' DELETE FROM TaskMessages WHERE MESSAGE_ID = ? '''
-        cur.execute(sql, commentID)
-        print('COMMENT  REMOVE')
-        print(pd.read_sql("SELECT * FROM TaskMessages", conn))
-        conn.commit()
-        conn.close()
 
     def get_percentage_complete(self, taskID):
         conn = sqlite3.connect("project.db")

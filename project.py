@@ -1,28 +1,31 @@
-from email.mime.text import MIMEText
-from tkinter import messagebox
-
 import pandas as pd
 import sqlite3
-from datetime import datetime, timedelta
-
+from datetime import datetime
 import matplotlib.pyplot as plt
 import numpy as np
 import matplotlib.dates as mdates
-import smtplib, ssl
-from matplotlib.patches import Rectangle
 
-from Login import Login
+from login import Login
 
 
 class Project():
 
     def create_project(self, project_name, owner, status, description):
+        """
 
+        Creates a project and adds it to the Project table in the database
+
+        Parameters
+        ----------
+            project_name : str, The name of a project
+            owner : str, The name of the project owner
+            status : str, The status of the project
+            description : str, The description of the project
+
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         try:
-            print('this is status')
-            print(status)
             if status == 'In-Progress':
                 self.set_project_start_date(project_name)
         except Exception as e:
@@ -32,12 +35,10 @@ class Project():
             sql = ''' INSERT INTO Project (PROJECT_NAME, OWNER, STATUS, DESCRIPTION, PERCENTAGE_COMPLETE)
                             VALUES(?,?,?,?,?) '''
             cur.execute(sql, project)
-            print('PROJECT  create')
-            print(pd.read_sql("SELECT * FROM Project", conn))
             conn.commit()
             conn.close()
         except Exception as e:
-            print('Error creating new project')
+            print('Error creating new project',e)
         try:
             if status == 'In-Progress':
                 self.set_project_start_date(project_name)
@@ -45,7 +46,17 @@ class Project():
             print('Error updating dates for new project', e)
 
     def edit_project(self, old_project_name, new_project_name, owner, status, description):
+        """
+        Edit a project and update the Project table in the database
 
+        Parameters
+        ----------
+            old_project_name : str, The current name of a project
+            new_project_name : str, The name of the edited project name (same as old_project_name if unedited)
+            owner : str, The name of the project owner
+            status : str, The status of the project
+            description : str, The description of the project
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         project_id = self.get_project_id(old_project_name)
@@ -64,6 +75,16 @@ class Project():
         conn.close()
 
     def get_all_projects(self):
+        """
+
+        Returns a list of all the project names in the Project table in the database
+
+        Returns
+        ----------
+        List
+            All the project names in the Project table
+
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = "SELECT PROJECT_NAME FROM Project"
@@ -75,6 +96,17 @@ class Project():
         return projects
 
     def get_all_project_info(self):
+        """
+
+        Returns all data from the Project table in the database
+
+
+        Returns
+        ----------
+        List
+            List of Tuples where each tuple contain an individual project's values
+
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = """   SELECT PROJECT_NAME, 
@@ -90,22 +122,50 @@ class Project():
         conn.commit()
         conn.close()
         return projects
-    def get_percentage_complete(self,projectName):
+    def get_percentage_complete(self,project_name):
+        """
+
+        Returns the percentage complete oof a given project from the Project table in the database
+
+        Parameters
+        ----------
+            project_name : str, The current name of a project
+
+        Returns
+        ----------
+        String
+            The percentage complete of given project with a '%' concatenated
+
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = ("SELECT PERCENTAGE_COMPLETE FROM Project WHERE PROJECT_NAME = (?)")
-        cur.execute(sql, [projectName])
+        cur.execute(sql, [project_name])
         per = cur.fetchone()
         percentage = per[0]
         conn.commit()
         conn.close()
         return str(percentage) + '%'
 
-    def get_project_id(self, projectName):
+    def get_project_id(self, project_name):
+        """
+
+        Returns the ID related to a project from the  Project table in the database
+
+        Parameters
+        ----------
+            project_name : str, The current name of a project
+
+        Returns
+        ----------
+        String
+            The percentage complete of given project with a '%' concatenated
+
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql_id = '''SELECT PROJECT_ID FROM Project WHERE PROJECT_NAME = (?)'''
-        cur.execute(sql_id, [projectName])
+        cur.execute(sql_id, [project_name])
         x = cur.fetchone()
         project_id = x[0]
         print(project_id)
@@ -113,11 +173,11 @@ class Project():
         conn.close()
         return project_id
 
-    def get_project_members(self, projectName):
+    def get_project_members(self, project_name):
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql_id = '''SELECT DISTINCT USERNAME FROM ProjectMembers WHERE PROJECT_NAME = (?)'''
-        cur.execute(sql_id, [projectName])
+        cur.execute(sql_id, [project_name])
         users = cur.fetchall()
         members = [x[0] for x in users]
         print(members)
@@ -125,14 +185,14 @@ class Project():
         conn.close()
         return members
 
-    def add_members(self,projectName, *members):
+    def add_members(self,project_name, *members):
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
-        project_id = self.get_project_id(projectName)
+        project_id = self.get_project_id(project_name)
         member_list = [x for x in members]
         member_list = member_list[0]
         for user in member_list:
-            project_member = (projectName, user, project_id)
+            project_member = (project_name, user, project_id)
             sql = ''' INSERT INTO ProjectMembers (PROJECT_NAME, USERNAME, PROJECT_ID)
                             VALUES(?,?,?) '''
             cur.execute(sql, project_member)
@@ -141,12 +201,12 @@ class Project():
         conn.commit()
         conn.close()
 
-    def remove_members(self, projectName, username):
+    def remove_members(self, project_name, username):
         conn = sqlite3.connect("project.db")
         conn.execute("PRAGMA foreign_keys = ON")
         cur = conn.cursor()
         try:
-            project_member = (projectName, username)
+            project_member = (project_name, username)
             sql = """ DELETE FROM ProjectMembers WHERE PROJECT_NAME = (?) AND USERNAME = (?) """
             cur.execute(sql, project_member)
             print('PROJECT MEMBERS  REMOVE')
@@ -391,16 +451,6 @@ class Project():
         except sqlite3.Error as e:
             print("Error updating start and end dates :", e)
 
-    # def get_percent_complete(self,project_name):
-    #     conn = sqlite3.connect("project.db")
-    #     cur = conn.cursor()
-    #     sql = "SELECT PERCENTAGE_COMPLETE FROM Project WHERE PROJECT_ID = (?)"
-    #     cur.execute(sql, [project_name])
-    #     per = cur.fetchone()
-    #     percentage = per[0]
-    #     conn.commit()
-    #     conn.close()
-    #     return str(percentage) + '%'
 
     def set_project_status(self,project_name, status):
         conn = sqlite3.connect("project.db")

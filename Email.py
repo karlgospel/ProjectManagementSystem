@@ -4,7 +4,7 @@ import ssl
 from email.mime.text import MIMEText
 from tkinter import messagebox
 
-from Task import Task
+from task import Task
 
 
 class Email:

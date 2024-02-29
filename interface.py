@@ -1,20 +1,14 @@
 import tkinter as tk
 from tkinter.ttk import *
-from tkinter import scrolledtext
 from tkinter import messagebox
-from tkinter.ttk import Progressbar
 from tkinter import ttk
-
-
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from Email import Email
-from Project import Project
-from Login import Login
-
-
-from SuperAdmin import SuperAdmin
-from Task import Task
-from TeamMember import TeamMember
+from project import Project
+from login import Login
+from super_admin import SuperAdmin
+from task import Task
+from team_member import TeamMember
 
 
 class LoginPage(tk.Toplevel):
@@ -113,8 +107,8 @@ class NewUserPopup(tk.Toplevel):
         email = self.email_entry.get()
         is_admin = bool(self.is_admin_var.get())
         try:
-            l = Login()
-            login_attempt = l.create_login(username, password, email, is_admin)
+            sa = SuperAdmin()
+            login_attempt = sa.create_login(username, password, email, is_admin)
             print(login_attempt)
             if login_attempt is None:
                 self.destroy()
@@ -156,7 +150,7 @@ class MainPage(tk.Toplevel):
         # Create File menu
         self.file_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="File", menu=self.file_menu)
-        self.file_menu.add_command(label="Switch User", command=self.switch_user)
+        self.file_menu.add_command(label="Log Out", command=self.switch_user)
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.exit_application)
 
@@ -484,9 +478,9 @@ class MainPage(tk.Toplevel):
             messagebox.showerror("Error removing member", f"An error occurred: {str(e)}")
 
     def is_admin(self, username):
-        l = Login()
+        tm =TeamMember()
         print(f'is admin {username}')
-        access = l.is_admin(username)
+        access = tm.is_admin(username)
 
         return access
 
@@ -730,8 +724,8 @@ class MainPage(tk.Toplevel):
         this_user = Login.current_user
         print('The current user is')
         print(this_user)
-        l = Login()
-        admin = l.is_admin(this_user)
+        tm = TeamMember()
+        admin = tm.is_admin(this_user)
         t = Task()
         assigned_to = t.is_assigned_to(task_id)
         owner = t.get_owner_from_task(task_id)
@@ -1016,7 +1010,7 @@ class MainPage(tk.Toplevel):
             return
 
         try:
-            t = TeamMember()
+            t = Task()
             assigned = []
             for i in self.members_listbox.curselection():
                 x = self.members_listbox.get(i)
@@ -1051,7 +1045,7 @@ class MainPage(tk.Toplevel):
                 x = self.members_listbox.get(i)
                 all_members.append(x)
             try:
-                #p = Project()
+
                 p.add_members(project_name, all_members)
             except Exception as e:
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")
