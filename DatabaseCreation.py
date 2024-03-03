@@ -24,13 +24,13 @@ def connect():
                 "PERCENTAGE_COMPLETE INTEGER, "
                 "OWNER TEXT)")
 
-    cur.execute("INSERT INTO Project ("
-                "PROJECT_NAME, "
-                "STATUS,"
-                "DESCRIPTION,"
-                "PERCENTAGE_COMPLETE, "
-                "OWNER) "
-                "VALUES ('myProject' ,'In-Progress', 'Building a fishing boat', 28, 'Karl Gospel')")
+    # cur.execute("INSERT INTO Project ("
+    #             "PROJECT_NAME, "
+    #             "STATUS,"
+    #             "DESCRIPTION,"
+    #             "PERCENTAGE_COMPLETE, "
+    #             "OWNER) "
+    #             "VALUES ('myProject' ,'In-Progress', 'Building a fishing boat', 28, 'Karl Gospel')")
 
     print (pd.read_sql("SELECT * FROM Project", conn))
 
@@ -50,13 +50,13 @@ def connect():
         "CONSTRAINT FK_PROJECT FOREIGN KEY (PROJECT_ID) REFERENCES Project(PROJECT_ID) ON DELETE CASCADE"
         ")")
 
-    cur.execute("INSERT INTO Tasks ("
-                "TASK_NAME, "
-                "PROJECT_ID,"
-                "DESCRIPTION, "
-                "STATUS,"
-                "PERCENTAGE_COMPLETE, "
-                "ASSIGNED_TO) VALUES ('Build Something please', 1, 'make something' ,'Completed', 28, 'Karl Gospel')")
+    # cur.execute("INSERT INTO Tasks ("
+    #             "TASK_NAME, "
+    #             "PROJECT_ID,"
+    #             "DESCRIPTION, "
+    #             "STATUS,"
+    #             "PERCENTAGE_COMPLETE, "
+    #             "ASSIGNED_TO) VALUES ('Build Something please', 1, 'make something' ,'Completed', 28, 'Karl Gospel')")
     print(pd.read_sql("SELECT * FROM Tasks", conn))
 
     # create Login table
@@ -68,7 +68,7 @@ def connect():
         "EMAIL TEXT,"
         "ADMIN BOOLEAN NOT NULL "
         ")")
-    cur.execute("INSERT INTO Login (USERNAME, PASSWORD, ADMIN,EMAIL) VALUES ('Karl Gospel', 'iii', True, 'karl.gospel25@gmail.com')")
+    #cur.execute("INSERT INTO Login (USERNAME, PASSWORD, ADMIN,EMAIL) VALUES ('karl_gospel', 'pass', True, 'karl.gospel25@gmail.com')")
     print(pd.read_sql("SELECT * FROM Login", conn))
 
     # Create Project Messages table
@@ -82,10 +82,10 @@ def connect():
         "CONSTRAINT FK_PROJECT FOREIGN KEY (PROJECT_ID) REFERENCES Project(PROJECT_ID) ON DELETE CASCADE"
         ")")
 
-    cur.execute("INSERT INTO ProjectMessages ("
-                "PROJECT_ID,"
-                "USERNAME,"
-                "MESSAGE) VALUES ( 1, 'Karl Gospel', 'too hard')")
+    # cur.execute("INSERT INTO ProjectMessages ("
+    #             "PROJECT_ID,"
+    #             "USERNAME,"
+    #             "MESSAGE) VALUES ( 1, 'Karl Gospel', 'too hard')")
     print(pd.read_sql("SELECT * FROM ProjectMessages", conn))
 
     # Create Project Members table
@@ -99,24 +99,24 @@ def connect():
         "CONSTRAINT FK_PROJECT FOREIGN KEY (PROJECT_ID) REFERENCES Project(PROJECT_ID) ON DELETE CASCADE"
         ")")
 
-    cur.execute("INSERT INTO ProjectMembers ("
-                "USERNAME,"
-                "PROJECT_NAME,"
-                "PROJECT_ID) VALUES ('Karl Gospel','Save Bubba', 1)")
+    # cur.execute("INSERT INTO ProjectMembers ("
+    #             "USERNAME,"
+    #             "PROJECT_NAME,"
+    #             "PROJECT_ID) VALUES ('Karl Gospel','Save Bubba', 1)")
     print(pd.read_sql("SELECT * FROM ProjectMembers", conn))
 
-    # Create Task Messages table
-    cur.execute(
-        "CREATE TABLE IF NOT EXISTS TaskMessages("
-        "MESSAGE_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-        "USERNAME TEXT NOT NULL, "
-        "TASK_ID INTEGER NOT NULL, "
-        "MESSAGE TEXT, "
-        "DATE_ADDED DATETIME DEFAULT CURRENT_TIMESTAMP,"
-        "CONSTRAINT FK_TASKS FOREIGN KEY (TASK_ID) REFERENCES Tasks(TASK_ID) ON DELETE CASCADE"
-        ")")
+    # # Create Task Messages table
+    # cur.execute(
+    #     "CREATE TABLE IF NOT EXISTS TaskMessages("
+    #     "MESSAGE_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
+    #     "USERNAME TEXT NOT NULL, "
+    #     "TASK_ID INTEGER NOT NULL, "
+    #     "MESSAGE TEXT, "
+    #     "DATE_ADDED DATETIME DEFAULT CURRENT_TIMESTAMP,"
+    #     "CONSTRAINT FK_TASKS FOREIGN KEY (TASK_ID) REFERENCES Tasks(TASK_ID) ON DELETE CASCADE"
+    #     ")")
 
-    print(pd.read_sql("SELECT * FROM TaskMessages", conn))
+    # print(pd.read_sql("SELECT * FROM TaskMessages", conn))
 
     conn.commit()
     conn.close()

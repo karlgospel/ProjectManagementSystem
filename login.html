@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module login</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">login</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Ckarlg%5Cpycharmprojects%5Cprojectmanagementsystem%5Clogin.py">c:\users\karlg\pycharmprojects\projectmanagementsystem\login.py</a></td></tr></table>
+    <p></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="bcrypt.html">bcrypt</a><br>
+</td><td class="multicolumn"><a href="pandas.html">pandas</a><br>
+</td><td class="multicolumn"><a href="re.html">re</a><br>
+</td><td class="multicolumn"><a href="sqlite3.html">sqlite3</a><br>
+</td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor index-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Classes</strong></td></tr>
+    
+<tr><td class="decor index-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl>
+<dt class="heading-text"><a href="builtins.html#object">builtins.object</a>
+</dt><dd>
+<dl>
+<dt class="heading-text"><a href="login.html#Login">Login</a>
+</dt></dl>
+</dd>
+</dl>
+ <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="Login">class <strong>Login</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code">Class&nbsp;to&nbsp;handle&nbsp;login&nbsp;and&nbsp;user&nbsp;creation.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;current_user:&nbsp;str<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;The&nbsp;username&nbsp;of&nbsp;the&nbsp;current&nbsp;user&nbsp;who&nbsp;is&nbsp;logged&nbsp;in.<br>
+&nbsp;<br>
+Methods:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Login-sign_in">sign_in</a>(username,&nbsp;password):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sign&nbsp;in&nbsp;a&nbsp;user&nbsp;with&nbsp;the&nbsp;given&nbsp;username&nbsp;and&nbsp;password.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Login-check_password">check_password</a>(username,&nbsp;password):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check&nbsp;if&nbsp;the&nbsp;provided&nbsp;password&nbsp;matches&nbsp;the&nbsp;stored&nbsp;password&nbsp;for&nbsp;the&nbsp;given&nbsp;username.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Login-check_username_distinct">check_username_distinct</a>(username):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check&nbsp;if&nbsp;the&nbsp;username&nbsp;is&nbsp;distinct&nbsp;(not&nbsp;already&nbsp;in&nbsp;use).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Login-get_users">get_users</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;usernames&nbsp;stored&nbsp;in&nbsp;the&nbsp;database.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="Login-check_password"><strong>check_password</strong></a>(self, username: str, password: str) -&gt; bool</dt><dd><span class="code">Check&nbsp;if&nbsp;the&nbsp;provided&nbsp;password&nbsp;matches&nbsp;the&nbsp;stored&nbsp;password&nbsp;for&nbsp;the&nbsp;given&nbsp;username.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;(str):&nbsp;The&nbsp;username&nbsp;of&nbsp;the&nbsp;user.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;password&nbsp;(str):&nbsp;The&nbsp;password&nbsp;to&nbsp;be&nbsp;checked.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool:&nbsp;True&nbsp;if&nbsp;the&nbsp;password&nbsp;matches,&nbsp;False&nbsp;otherwise.</span></dd></dl>
+
+<dl><dt><a name="Login-check_username_distinct"><strong>check_username_distinct</strong></a>(self, username: str) -&gt; bool</dt><dd><span class="code">Check&nbsp;if&nbsp;the&nbsp;username&nbsp;is&nbsp;distinct&nbsp;(not&nbsp;already&nbsp;in&nbsp;use).<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;(str):&nbsp;The&nbsp;username&nbsp;to&nbsp;be&nbsp;checked.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool:&nbsp;True&nbsp;if&nbsp;the&nbsp;username&nbsp;is&nbsp;distinct,&nbsp;False&nbsp;otherwise.</span></dd></dl>
+
+<dl><dt><a name="Login-get_users"><strong>get_users</strong></a>(self) -&gt; list[str]</dt><dd><span class="code">Get&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;usernames&nbsp;stored&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list:&nbsp;A&nbsp;list&nbsp;of&nbsp;usernames.</span></dd></dl>
+
+<dl><dt><a name="Login-sign_in"><strong>sign_in</strong></a>(self, username: str, password: str) -&gt; bool</dt><dd><span class="code">Sign&nbsp;in&nbsp;a&nbsp;user&nbsp;with&nbsp;the&nbsp;given&nbsp;username&nbsp;and&nbsp;password.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;(str):&nbsp;The&nbsp;username&nbsp;of&nbsp;the&nbsp;user.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;password&nbsp;(str):&nbsp;The&nbsp;password&nbsp;of&nbsp;the&nbsp;user.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool:&nbsp;True&nbsp;if&nbsp;sign-in&nbsp;is&nbsp;successful,&nbsp;False&nbsp;otherwise.</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object</span></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>current_user</strong> = None</dl>
+
+</td></tr></table></td></tr></table>
+</body></html>

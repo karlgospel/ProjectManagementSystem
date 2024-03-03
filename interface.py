@@ -1,3 +1,4 @@
+import textwrap
 import tkinter as tk
 from tkinter.ttk import *
 from tkinter import messagebox
@@ -12,7 +13,29 @@ from team_member import TeamMember
 
 
 class LoginPage(tk.Toplevel):
+    """
+    A class representing the login page of the application.
+
+    Parameters:
+    - master (Tk or None): The master widget. If None, the default value is used.
+
+    Attributes:
+    - username_entry (Entry): Entry widget for entering the username.
+    - password_entry (Entry): Entry widget for entering the password.
+    - login_button (Button): Button widget for initiating the login process.
+
+    Methods:
+    - __init__(self, master=None): Initializes the LoginPage instance.
+    - login(self): Validates user credentials and initiates login process.
+    """
+
     def __init__(self, master=None):
+        """
+        Initializes a LoginPage instance.
+
+        Parameters:
+        - master (Tk or None): The master widget. If None, the default value is used.
+        """
         super().__init__(master)
         self.title("Login Page")
         # Calculate screen dimensions
@@ -55,6 +78,11 @@ class LoginPage(tk.Toplevel):
         self.login_button.grid(row=3, column=1, padx=5, pady=5, sticky="nsew")
 
     def login(self):
+        """
+        Validates user credentials and initiates the login process.
+        If credentials are valid, hides the login window and opens the main page.
+        If credentials are invalid, displays an error message.
+        """
         # Retrieve username and password
         username = self.username_entry.get()
         password = self.password_entry.get()
@@ -70,9 +98,108 @@ class LoginPage(tk.Toplevel):
         else:
             messagebox.showerror("Login", "Invalid username or password")
 
+class ChangePasswordPopup(tk.Toplevel):
+    """
+    A class representing a popup window for changing the user's password.
+
+    Parameters:
+    - master (Tk): The master widget to which this popup belongs.
+
+    Attributes:
+    - username_entry (Entry): Entry widget for entering the username.
+    - password_entry (Entry): Entry widget for entering the current password.
+    - new_password_entry (Entry): Entry widget for entering the new password.
+    - confirm_new_password_entry (Entry): Entry widget for confirming the new password.
+    - create_button (Button): Button widget for initiating the password change process.
+
+    Methods:
+    - __init__(self, master): Initializes the ChangePasswordPopup instance.
+    - change_password(self): Validates user input and changes the password accordingly.
+    """
+
+    def __init__(self, master):
+        """
+        Initializes a ChangePasswordPopup instance.
+
+        Parameters:
+        - master (Tk): The master widget to which this popup belongs.
+        """
+        super().__init__(master)
+        self.title("Change Password")
+        # Create a custom style for buttons
+        style = ttk.Style()
+        style.theme_use("clam")  # Use a pre-defined theme as a base
+
+        # Labels and entry boxes for user details
+        self.login_username_label = tk.Label(self, text="Username:")
+        self.login_username_label.grid(row=0, column=0, padx=5, pady=5)
+        self.username_entry = tk.Entry(self)
+        self.username_entry.grid(row=0, column=1, padx=5, pady=5)
+
+        tk.Label(self, text="Password:").grid(row=1, column=0, padx=5, pady=5)
+        self.password_entry = tk.Entry(self, show="*")
+        self.password_entry.grid(row=1, column=1, padx=5, pady=5)
+
+        tk.Label(self, text="New Password:").grid(row=2, column=0, padx=5, pady=5)
+        self.new_password_entry = tk.Entry(self, show="*")
+        self.new_password_entry.grid(row=2, column=1, padx=5, pady=5)
+
+        tk.Label(self, text=" Confirm New Password:").grid(row=3, column=0, padx=5, pady=5)
+        self.confirm_new_password_entry = tk.Entry(self, show="*")
+        self.confirm_new_password_entry.grid(row=3, column=1, padx=5, pady=5)
+
+        # Button to create the new user
+        self.create_button = ttk.Button(self, text="OK", command=self.change_password)
+        self.create_button.grid(row=4, columnspan=2, padx=5, pady=10)
+
+    def change_password(self):
+        """
+        Validates user input and changes the password accordingly.
+        """
+        # Retrieve user details from entry boxes
+        username = self.username_entry.get()
+        password = self.password_entry.get().strip()
+        new_password = self.new_password_entry.get().strip()
+        confirm_new_password = self.confirm_new_password_entry.get().strip()
+        if new_password != confirm_new_password:
+            messagebox.showinfo('Error', 'New password does not match')
+            return
+        tm = TeamMember()
+        password_change = tm.change_password(username, password, new_password)
+        if password_change:
+            messagebox.showinfo('Success', 'Password successfully changed')
+            self.destroy()
+        else:
+            messagebox.showinfo('Error', 'Incorrect details entered')
+            return
 
 class NewUserPopup(tk.Toplevel):
+    """
+    A class representing a popup window for creating a new user.
+
+    Parameters:
+    - master (Tk): The master widget to which this popup belongs.
+
+    Attributes:
+    - username_entry (Entry): Entry widget for entering the username.
+    - password_entry (Entry): Entry widget for entering the password.
+    - email_entry (Entry): Entry widget for entering the email.
+    - is_admin_var (IntVar): Variable to store whether the user is an admin or not.
+    - admin_checkbox (Checkbutton): Checkbutton widget to mark whether the user is an admin.
+    - create_button (Button): Button widget for creating the new user.
+
+    Methods:
+    - __init__(self, master): Initializes the NewUserPopup instance.
+    - create_user(self): Validates user input and creates the new user accordingly.
+    """
+
     def __init__(self, master):
+        """
+        Initializes a NewUserPopup instance.
+
+        Parameters:
+        - master (Tk): The master widget to which this popup belongs.
+        """
         super().__init__(master)
         self.title("New User")
         # Create a custom style for buttons
@@ -80,7 +207,8 @@ class NewUserPopup(tk.Toplevel):
         style.theme_use("clam")  # Use a pre-defined theme as a base
 
         # Labels and entry boxes for user details
-        self.login_username_label = tk.Label(self, text="Username:").grid(row=0, column=0, padx=5, pady=5)
+        self.login_username_label = tk.Label(self, text="Username:")
+        self.login_username_label.grid(row=0, column=0, padx=5, pady=5)
         self.username_entry = tk.Entry(self)
         self.username_entry.grid(row=0, column=1, padx=5, pady=5)
 
@@ -101,6 +229,9 @@ class NewUserPopup(tk.Toplevel):
         self.create_button.grid(row=4, columnspan=2, padx=5, pady=10)
 
     def create_user(self):
+        """
+        Validates user input and creates the new user accordingly.
+        """
         # Retrieve user details from entry boxes
         username = self.username_entry.get()
         password = self.password_entry.get()
@@ -118,9 +249,61 @@ class NewUserPopup(tk.Toplevel):
             print('Create User error', e)
         # Close the popup window after creating the user
 
-
 class MainPage(tk.Toplevel):
+    """
+    A class representing the main application window.
+
+    Parameters:
+    - master (Tk): The master widget to which this window belongs.
+
+    Attributes:
+    - tab_control (Notebook): Notebook widget to manage different tabs.
+    - menu_bar (Menu): Menu bar containing various options.
+    - project_tree (Treeview): Treeview widget to display project details.
+    - task_tree (Treeview): Treeview widget to display task details.
+    - project_members_tree (Treeview): Treeview widget to display project members.
+    - timeline_project_list (Combobox): Combobox widget to select a project for the timeline.
+    - project_messages_treeview (Treeview): Treeview widget to display project messages.
+    - is_admin_var (IntVar): Variable to store whether the user is an admin or not.
+
+    Methods:
+    - __init__(self, master=None): Initializes the MainPage instance.
+    - delete_project(self): Deletes the selected project.
+    - delete_task(self): Deletes the selected task.
+    - create_timeline_plot(self, *event): Creates a timeline plot for the selected project.
+    - update_timeline_plot(self): Updates the timeline plot for the selected project.
+    - add_timeline_msg_popup(self): Displays a popup to add a message to the timeline.
+    - validate_timeline_msg(self): Validates and adds the timeline message.
+    - remove_member_from_project(self): Removes a member from the selected project.
+    - is_admin(self, username): Checks if the given user is an admin.
+    - switch_user(self): Switches the user and opens the login screen.
+    - wrap_all_rows(self, data): Wraps text in each row of a dataset.
+    - load_task_treeview(self, *event): Loads tasks into the treeview based on the selected project.
+    - refresh_project_tree(self, project_name): Refreshes the project treeview.
+    - assign_task_popup(self): Displays a popup window to reassign a task.
+    - optionMenu_projectSelection(self, project): Handles project selection from the option menu.
+    - optionMenu_statusSelection(self, status): Handles status selection from the option menu.
+    - wrap(self, text, length=60): Wraps text to fit within a specified length.
+    - show_all_project_info(self): Displays all project information in the project treeview.
+    - add_project_popup(self): Displays a popup window to add a new project.
+    - add_tasks_popup(self): Displays a popup window to add new tasks to a project.
+    - save_new_task(self, task_name, project_name, status, description, popup): Saves a new task to the database.
+    - save_new_project(self, project_name, status, description, owner, popup): Saves a new project to the database.
+    - update_project_treeview(self): Updates the project treeview with new projects.
+    - get_usernames(self): Retrieves a list of usernames from the database.
+    - get_project_members(self, projectName): Retrieves a list of members associated with a project.
+    - get_unassigned_members_for_project(self, project_name): Retrieves a list of unassigned members for a project.
+    - search_projects(self, event): Searches for projects based on user input.
+    - treeview_sort_column(self, tv, col, reverse): Sorts columns in the treeview widget.
+    """
+
     def __init__(self, master=None):
+        """
+        Initializes a MainPage instance.
+
+        Parameters:
+        - master (Tk): The master widget to which this window belongs.
+        """
         # Create a style
         style = ttk.Style()
         style.theme_use("clam")
@@ -137,7 +320,7 @@ class MainPage(tk.Toplevel):
         # Configure the style of all treeview headings
         style.configure("Treeview.Heading", font=("Helvetica", 10))
         # Set height for treeview rows
-        style.configure("Treeview", rowheight=30, font=("Helvetica", 12))
+        style.configure("Treeview", rowheight="80", font=("Calibri", 12))
 
         super().__init__(master=None)
         self.title("Project Manager")
@@ -150,6 +333,7 @@ class MainPage(tk.Toplevel):
         # Create File menu
         self.file_menu = tk.Menu(self.menu_bar, tearoff=0)
         self.menu_bar.add_cascade(label="File", menu=self.file_menu)
+        self.file_menu.add_command(label="Change Password", command=self.open_change_password_popup)
         self.file_menu.add_command(label="Log Out", command=self.switch_user)
         self.file_menu.add_separator()
         self.file_menu.add_command(label="Exit", command=self.exit_application)
@@ -195,9 +379,13 @@ class MainPage(tk.Toplevel):
                                               command=self.edit_project_popup)
         self.edit_project_button.grid(row=0, column=1, padx=(0, 10), pady=5)
 
+        self.delete_project_button = ttk.Button(self.button_search_frame, text="Delete Project",
+                                              command=self.delete_project)
+        self.delete_project_button.grid(row=0, column=2, padx=(0, 10), pady=5)
+
         # Create frame for search box and label
         self.search_frame = tk.Frame(self.button_search_frame, background="white")
-        self.search_frame.grid(row=0, column=2, padx=(50, 10), pady=5, sticky="w")
+        self.search_frame.grid(row=0, column=3, padx=(50, 10), pady=5, sticky="w")
 
         # Create search box label
         self.search_label = tk.Label(self.search_frame, text="Search:", font=("TkDefaultFont", 12), background="white")
@@ -233,8 +421,9 @@ class MainPage(tk.Toplevel):
                                   command=lambda: self.treeview_sort_column(self.project_tree, "End Date", False))
         self.project_tree.heading("Progress", text="Progress %",
                                   command=lambda: self.treeview_sort_column(self.project_tree, "Progress", False))
-        self.project_tree.column("Project Name", width=200, )
-        self.project_tree.column("Description", width=400, )
+        self.project_tree.column("Project Name", width=250)
+        self.project_tree.column("Description", width=450)
+        self.project_tree.column("Progress", width=100)
         self.project_tree.grid(row=0, column=0, sticky="nsew")
         self.project_tree.bind("<<TreeviewSelect>>", self.update_project_members_treeview_bind)
 
@@ -289,12 +478,15 @@ class MainPage(tk.Toplevel):
         self.edit_task_button = ttk.Button(self.button_project_frame, text=" Edit Task ", command=self.edit_task_popup)
         self.edit_task_button.grid(row=0, column=1, padx=(0, 10), pady=5, sticky="w")
 
+        self.delete_task_button = ttk.Button(self.button_project_frame, text=" Delete Task ", command=self.delete_task)
+        self.delete_task_button.grid(row=0, column=2, padx=(0, 10), pady=5, sticky="w")
+
         # Create dropdown to select a project
         self.project_dropdown_label = tk.Label(self.button_project_frame, text=" Project: ", font=("Helvetica", 12), background="white")
-        self.project_dropdown_label.grid(row=0, column=2, padx=(50,5), pady=5)
-        self.tasks = ttk.Combobox(self.button_project_frame, state="readonly", width=20, font=('Arial', 16))
-        self.tasks.grid(row=0, column=3, padx=0, pady=5, sticky="w")
-        self.tasks.bind("<<ComboboxSelected>>", self.update_task_treeview)
+        self.project_dropdown_label.grid(row=0, column=3, padx=(50,5), pady=5)
+        self.tasks = ttk.Combobox(self.button_project_frame, state="readonly", width=40, font=('Arial', 16))
+        self.tasks.grid(row=0, column=4, padx=0, pady=5, sticky="w")
+        self.tasks.bind("<<ComboboxSelected>>", self.load_task_treeview)
 
         # Configure row and column weights for the task_tree_frame
         self.TasksTab.grid_rowconfigure(1, weight=1)
@@ -331,12 +523,18 @@ class MainPage(tk.Toplevel):
         self.task_tree.heading("Comments", text="Owner's Comments",
                                command=lambda: self.treeview_sort_column(self.task_tree, "Comments", False))
         self.task_tree.column("Task ID", width=80)
+        self.task_tree.column("Description", width=450)
         self.task_tree.column("Progress", width=100)
         self.task_tree.grid(row=0, column=0, sticky="nsew")
 
         self.scrollbar = ttk.Scrollbar(self.task_tree_frame, orient="vertical", command=self.task_tree.yview)
         self.scrollbar.grid(row=0, column=1, sticky='ns')
         self.task_tree.configure(yscrollcommand=self.scrollbar.set)
+
+        # Get the access for the current user
+        # task_access = self.is_admin(Login.current_user)
+        if not self.is_admin(Login.current_user):
+            self.delete_task_button.config(state=tk.DISABLED)
 
 
         ####------------------ TIMELINE TAB --------------------------###
@@ -360,7 +558,7 @@ class MainPage(tk.Toplevel):
         # Create project dropdown list to choose project
         self.timeline_project_label = tk.Label(self.add_message_project_frame, text=" Project: ", font=("Helvetica", 12), background="white")
         self.timeline_project_label.grid(row=0, column=2, padx=(50,0), pady=5)
-        self.timeline_project_list = ttk.Combobox(self.add_message_project_frame, state="readonly", width=20, font=('Arial', 16))
+        self.timeline_project_list = ttk.Combobox(self.add_message_project_frame, state="readonly", width=40, font=('Arial', 16))
         self.timeline_project_list.grid(row=0, column=3, padx=(0,10), pady=5, sticky="e")
         self.timeline_project_list.bind("<<ComboboxSelected>>", self.create_timeline_plot)
 
@@ -391,7 +589,65 @@ class MainPage(tk.Toplevel):
         self.create_timeline_plot()
         self.update_project_list()
 
+    def delete_project(self):
+        """Deletes the selected project."""
+        current_project_selected = self.project_tree.focus()
+
+        if not current_project_selected:
+            messagebox.showerror("Error", "Please select a Project.")
+            return
+
+        response = messagebox.askquestion("Confirm Changes", "Are you sure you want to delete this task?")
+        if response == 'yes':
+            selected_project = self.project_tree.item(current_project_selected)
+
+            project_name = selected_project["values"][0]
+            print('project to delete')
+            print(project_name)
+
+            try:
+                p = Project()
+                p.delete_project(project_name)
+            except Exception as e:
+                print('Error deleting project', e)
+            self.timeline_project_list.set('')
+            self.tasks.set('')
+            self.update_project_treeview()
+            self.update_project_list()
+            self.load_task_treeview()
+
+    def delete_task(self):
+        """Deletes the selected task."""
+        current_task_selected = self.task_tree.focus()
+        if not current_task_selected:
+            messagebox.showerror("Error", "Please select a task.")
+            return
+        selected_task = self.task_tree.item(current_task_selected)
+
+        task_id = selected_task["values"][0]
+
+        try:
+            response = messagebox.askquestion("Confirm Changes", "Are you sure you want to delete this task?")
+            if response == 'yes':
+                t = Task()
+                project_name = t.get_project_for_task(task_id)
+                t.delete_task(task_id)
+                self.load_task_treeview()
+                p = Project()
+                p.update_percentage_complete(project_name)
+                self.update_project_treeview()
+                self.update_project_list()
+
+        except Exception as e:
+            print('Error deleting task:', e)
+
     def create_timeline_plot(self, *event):
+        """
+        Creates a timeline plot for the selected project.
+
+        Parameters:
+        - event: Additional event arguments (ignored).
+        """
         # Retrieve project selected in timeline tab
         selected_project = self.timeline_project_list.get()
         p = Project()
@@ -399,16 +655,31 @@ class MainPage(tk.Toplevel):
         canvas = FigureCanvasTkAgg(fig, master=self.timeline_frame)
         canvas.draw()
         canvas.get_tk_widget().grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+        # self.update_project_messages_treeview()
+        # Update other tabs with selected project
+        self.tasks.set(selected_project)
+        self.load_task_treeview()
+        for i in self.project_tree.get_children():
+            project = self.project_tree.item(i, "values")[0]
+            if project == selected_project:
+                self.project_tree.selection_set(i)
+                self.project_tree.selection_add(i)
+                self.project_tree.focus(i)
 
+        self.refresh_project_members_treeview(selected_project)
         self.update_project_messages_treeview()
-
+    def update_timeline_plot(self):
+        """Updates the timeline plot for the selected project."""
+        # Retrieve project selected in timeline tab
+        selected_project = self.timeline_project_list.get()
+        p = Project()
+        fig = p.create_timeline(selected_project)
+        canvas = FigureCanvasTkAgg(fig, master=self.timeline_frame)
+        canvas.draw()
+        canvas.get_tk_widget().grid(row=0, column=0, padx=5, pady=5, sticky="nsew")
+        self.update_project_messages_treeview()
     def add_timeline_msg_popup(self):
-        def validate_max_characters(text):
-            # Ensures entry box is limited to 30 characters
-            if len(text) <= 30:
-                return True
-            else:
-                return False
+        """Displays a popup to add a message to the timeline."""
         selected_project = self.timeline_project_list.get()
         # Check project has been selected
         if selected_project:
@@ -423,8 +694,8 @@ class MainPage(tk.Toplevel):
             self.project_name.grid(row=0, column=1, padx=5, pady=5)
             self.project_name.config(state=tk.DISABLED)
 
-
-            validation = self.register(validate_max_characters)
+            # Add validation to limit mesage to thirty characters
+            validation = self.register(self.validate_max_characters_thirty)
 
             # Message is limited to 30 characters
             tk.Label(popup, text="Message (max 30 characters):").grid(row=1, column=0, padx=5, pady=5)
@@ -438,6 +709,7 @@ class MainPage(tk.Toplevel):
 
 
     def validate_timeline_msg(self):
+        """Validates and adds the timeline message."""
         messages = ["Are you sure you want to add this message?","Messages cannot be removed once created"]
         response = messagebox.askquestion("Confirm Changes", "\n".join(messages))
         if response == 'yes':
@@ -454,7 +726,7 @@ class MainPage(tk.Toplevel):
                 print('Error validating timeline message', e)
 
     def remove_member_from_project(self):
-
+        """Removes a member from the selected project."""
         current_project_selected = self.project_tree.focus()
         if not current_project_selected:
             messagebox.showerror("Error", "Please select a Project.")
@@ -478,6 +750,15 @@ class MainPage(tk.Toplevel):
             messagebox.showerror("Error removing member", f"An error occurred: {str(e)}")
 
     def is_admin(self, username):
+        """
+        Checks if the given user is an admin.
+
+        Parameters:
+        - username (str): The username to check.
+
+        Returns:
+        - bool: True if the user is an admin, False otherwise.
+        """
         tm =TeamMember()
         print(f'is admin {username}')
         access = tm.is_admin(username)
@@ -485,6 +766,7 @@ class MainPage(tk.Toplevel):
         return access
 
     def switch_user(self):
+        """Switches the user and opens the login screen."""
         # Close the main page
         self.destroy()
 
@@ -493,18 +775,27 @@ class MainPage(tk.Toplevel):
         login_screen.mainloop()
 
     def open_new_user_popup(self):
+        """Opens a popup to create a new user."""
         # Open the New User popup
         new_user_popup = NewUserPopup(self)
         new_user_popup.mainloop()
 
-
+    def open_change_password_popup(self):
+        """Opens a popup to change the password."""
+        # Open the Change password popup
+        change_password_popup = ChangePasswordPopup(self)
+        change_password_popup.mainloop()
 
     def exit_application(self):
+        """Exits the application."""
         # Close the app and stop running in IDE
         self.master.destroy()
         self.quit()
 
     def add_member_popup(self):
+        """
+        Opens a popup window for adding members to a project.
+        """
         # Check if user has selected a project
         current_project_selected = self.project_tree.focus()
         if not current_project_selected:
@@ -543,6 +834,13 @@ class MainPage(tk.Toplevel):
 
 
     def add_members_to_project(self, project_name, popup):
+        """
+        Adds members to the selected project.
+
+        Parameters:
+        - project_name (str): The name of the project to which members will be added.
+        - popup (Toplevel): The popup window from which this method is called.
+        """
         current_project_selected = self.project_tree.focus()
 
         if not current_project_selected:
@@ -573,8 +871,26 @@ class MainPage(tk.Toplevel):
             except Exception as e:
                 messagebox.showerror("Error making member changes", f"An error occurred: {str(e)}")
 
-    def edit_project_popup(self):
+    def validate_max_characters_thirty(self,text):
+        """
+        Validates if the text length is less than or equal to thirty characters.
 
+        Parameters:
+        - text (str): The text to be validated.
+
+        Returns:
+        - bool: True if the text length is less than or equal to thirty characters, False otherwise.
+        """
+        # Ensures entry box is limited to 30 characters
+        if len(text) <= 30:
+            return True
+        else:
+            return False
+
+    def edit_project_popup(self):
+        """
+        Opens a popup window for editing a project.
+        """
         current_project_selected = self.project_tree.focus()
 
         if not current_project_selected:
@@ -587,11 +903,14 @@ class MainPage(tk.Toplevel):
         popup = tk.Toplevel(self)
         popup.title("Edit Project")
 
+        # Add validation to restrict project name to thirty characters
+        validation = self.register(self.validate_max_characters_thirty)
         # Labels and entry fields for project details
-        tk.Label(popup, text="Project Name:").grid(row=0, column=0, padx=5, pady=5)
-        self.project_name_entry = tk.Entry(popup)
+        tk.Label(popup, text="Project Name (max 30):").grid(row=0, column=0, padx=5, pady=5)
+        self.project_name_entry = tk.Entry(popup, validate="key", validatecommand=(validation, "%P"))
         self.project_name_entry.insert(0, selected_project["values"][0])
         self.project_name_entry.grid(row=0, column=1, padx=5, pady=5)
+
 
         # Create status entry options for standard users and admin users
         # Only admins can mark a project as completed
@@ -630,6 +949,18 @@ class MainPage(tk.Toplevel):
 
     def save_edited_project(self, project_name, status, description, owner, old_project_name, current_project_selected,
                             popup):
+        """
+           Saves the edited project details.
+
+           Parameters:
+           - project_name (str): The updated name of the project.
+           - status (str): The updated status of the project.
+           - description (str): The updated description of the project.
+           - owner (str): The updated owner of the project.
+           - old_project_name (str): The original name of the project.
+           - current_project_selected: The currently selected project in the treeview.
+           - popup (Toplevel): The popup window from which this method is called.
+           """
         # Check user has entered all details
         if not (project_name and status and description and owner):
             messagebox.showerror("Error", "Please fill in all fields.")
@@ -655,6 +986,12 @@ class MainPage(tk.Toplevel):
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
     def update_project_messages_treeview(self, *event):
+        """
+        Updates the project messages treeview.
+
+        Parameters:
+        - event: Binded to the project treeview.
+        """
         # Check project is selected
         selected_project = self.timeline_project_list.get()
         if selected_project:
@@ -670,6 +1007,12 @@ class MainPage(tk.Toplevel):
 
 
     def reload_project_members_treeview(self, project_name):
+        """
+        Reloads the project members treeview.
+
+        Parameters:
+        - project_name (str): The name of the project.
+        """
         # Used after project is edited as need to get project name to stop it deselecting in treeview
         # selected_item = self.project_tree.focus()
         # project_name = self.project_tree.item(selected_item, "values")[0]
@@ -685,6 +1028,12 @@ class MainPage(tk.Toplevel):
             print("Error reloading project members treeview:", e)
 
     def update_project_members_treeview_bind(self, *event):
+        """
+        Updates the project members treeview.
+
+        Parameters:
+        - event: Binded to the project treeview.
+        """
         try:
             selected_item = self.project_tree.focus()
             project_name = self.project_tree.item(selected_item, "values")[0]
@@ -699,9 +1048,26 @@ class MainPage(tk.Toplevel):
             try:
                 for member in project_members:
                     self.project_members_tree.insert("", "end", values=member)
+
             except Exception as e:
                 print("Error updating project members treeview bind:", e)
+        try:
+            self.timeline_project_list.set(project_name)
+            self.tasks.set(project_name)
+            self.update_timeline_plot()
+            self.update_project_messages_treeview()
+            self.load_task_treeview()
+
+        except:
+            pass
+
     def refresh_project_members_treeview(self, project_name):
+        """
+        Refreshes the project members treeview.
+
+        Parameters:
+        - project_name (str): The name of the project.
+        """
         if project_name:
             p = Project()
             project_members = p.get_project_members(project_name)
@@ -712,7 +1078,9 @@ class MainPage(tk.Toplevel):
             except Exception as e:
                 print("Error updating project members treeview:", e)
     def update_project_list(self):
-        # Updates the dropdowns to display list of projects to select
+        """
+        Updates the dropdowns to display list of projects to select.
+        """
         p = Project()
         all_projects = p.get_all_projects()
         self.tasks['values'] = all_projects
@@ -721,6 +1089,15 @@ class MainPage(tk.Toplevel):
         return all_projects
 
     def check_task_access(self, task_id):
+        """
+        Checks the access level of the current user for the given task.
+
+        Parameters:
+        - task_id (int): The ID of the task.
+
+        Returns:
+        - str: The access level ('admin', 'owner', 'restricted') for the current user.
+        """
         this_user = Login.current_user
         print('The current user is')
         print(this_user)
@@ -737,33 +1114,44 @@ class MainPage(tk.Toplevel):
             return 'restricted'
 
     def edit_task_popup(self):
+        """
+        Opens a popup window for editing a task.
+        """
         # Get the currently selected task
         current_task_selected = self.task_tree.focus()
-
         if not current_task_selected:
             messagebox.showerror("Error", "Please select a task.")
             return
         selected_task = self.task_tree.item(current_task_selected)
-        task_id = selected_task["values"][0]
 
+        task_id = selected_task["values"][0]
+        assigned_to = selected_task["values"][3]
+        print('this task is assigned to')
+        print(assigned_to)
         # Get the access for the current user
         access = self.check_task_access(task_id)
+        print('this is the access level')
+        print(access)
         if access == 'restricted':
             messagebox.showinfo('Restricted Access', 'Sorry, you dont have access to this task' )
-
+            return
         # Extract the selected project from the combobox
         selected_project = self.tasks.get()
         
-        # Get the access for the current user
-        access = self.check_task_access(task_id)
+        # # Get the access for the current user
+        # access = self.check_task_access(task_id)
+
 
         # Open a new popup window for editing the task
         popup = tk.Toplevel(self)
         popup.title("Edit Task")
 
+        # Add validation to limit task name to thirty characters
+        validation = self.register(self.validate_max_characters_thirty)
+
         # Labels and entry fields for task details
-        tk.Label(popup, text="Task Name:").grid(row=0, column=0, padx=5, pady=5)
-        self.task_name_entry = tk.Entry(popup)
+        tk.Label(popup, text="Task Name (max 30):").grid(row=0, column=0, padx=5, pady=5)
+        self.task_name_entry = tk.Entry(popup, validate="key", validatecommand=(validation, "%P"))
         self.task_name_entry.insert(0, selected_task["values"][1])  # Insert the current task name
         self.task_name_entry.grid(row=0, column=1, padx=5, pady=5)
 
@@ -785,14 +1173,22 @@ class MainPage(tk.Toplevel):
         tk.Label(popup, text="Comments:").grid(row=5, column=0, padx=5, pady=5)
         self.comments_entry = tk.Text(popup, height=5, width=30)
         self.comments_entry.grid(row=6, column=1, padx=5, pady=5)
-        self.comments_entry.insert("1.0", selected_task["values"][8])  # Insert the current description
+        # Check if "values" list exists and has enough elements - misses last value if blank
+        if "values" in selected_task and len(selected_task["values"]) > 8:
+            self.comments_entry.insert("1.0", selected_task["values"][8])  # Insert the current description
+
+        # self.comments_entry.insert("1.0", selected_task["values"][8])  # Insert the current description
 
         # Get project members for project
         self.project_members = self.get_project_members(selected_project)
         tk.Label(popup, text="Assign Task To:").grid(row=7, column=0, padx=5, pady=5)
-        self.members_listbox = tk.Listbox(popup, height=10, width=30, selectmode=tk.MULTIPLE)
+        self.members_listbox = tk.Listbox(popup, height=10, width=30)
         for mem in self.project_members:
             self.members_listbox.insert(tk.END, mem)
+        assigned_to_index = self.project_members.index(assigned_to)
+        print(assigned_to_index)
+        self.members_listbox.selection_set(assigned_to_index)
+        self.members_listbox.configure(exportselection=False)
         self.members_listbox.grid(row=8, column=1, padx=5, pady=5)
         scrollbar = tk.Scrollbar(
             popup,
@@ -814,6 +1210,7 @@ class MainPage(tk.Toplevel):
                                                                          popup))
         self.save_button.grid(row=10, columnspan=2, padx=5, pady=10)
 
+        # Check user access and restrict fields which cannot be edited by them
         if access == 'owner':
             self.task_name_entry.config(state=tk.DISABLED)
             self.task_status_entry.config(state=tk.DISABLED)
@@ -824,6 +1221,18 @@ class MainPage(tk.Toplevel):
 
 
     def save_edit_task(self, task_name, task_id, status, progress, description, comment, popup):
+        """
+        Saves the edited task details.
+
+        Parameters:
+        - task_name (str): The updated name of the task.
+        - task_id (int): The ID of the task.
+        - status (str): The updated status of the task.
+        - progress (str): The updated progress of the task.
+        - description (str): The updated description of the task.
+        - comment (str): The updated comments for the task.
+        - popup (Toplevel): The popup window from which this method is called.
+        """
         if not (task_name and status and description and task_id and self.members_listbox.curselection()):
             messagebox.showerror("Error", "Please fill in all fields.")
             return
@@ -844,36 +1253,92 @@ class MainPage(tk.Toplevel):
                     t = Task()
                     project_name = t.get_project_for_task(task_id)
                     e = Email()
-                    e.send_task_assignmnent_email(assigned_to, project_name)
+                    e.send_task_assignment_email(assigned_to, project_name)
                 t.edit_task(task_id, task_name, description, status, progress, assigned_to, comment)
                 t.update_task_start_and_end_dates(task_id, status)
                 self.update_project_percent_complete(task_id)
-                self.update_task_treeview()
+                self.load_task_treeview()
                 self.update_project_treeview()
                 popup.destroy()
             except Exception as e:
                 messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
     def update_project_percent_complete(self, task_id):
+        """
+        Updates the percentage completion of the project associated with the given task.
+
+        Parameters:
+        - task_id (int): The ID of the task.
+        """
         try:
             t = Task()
             project_name = t.get_project_for_task(task_id)
+            print(project_name)
             p = Project()
             p.update_percentage_complete(project_name)
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
+    def wrap_all_rows(self, data):
+        """
+        Wraps each value in each row of the data list to fit a specific length.
+        Used in the treeviews to ensure text fits in the columns
 
-    def update_task_treeview(self, *event):
+        Parameters:
+        - data (list): The list of data rows.
+
+        Returns:
+        - list: The list of data rows with wrapped values.
+        """
+        all_wrapped_data = []
+        for each_project in data:
+            wrapped_data = []
+            for each_value in each_project:
+                if type(each_value) is int or type(each_value) is float:
+                    wrapped_data.append(round(each_value,2))
+                elif each_value:
+                    wrapped_data.append(self.wrap(each_value))
+                elif each_value is None:
+                    wrapped_data.append('')
+            all_wrapped_data.append(wrapped_data)
+        return all_wrapped_data
+
+    def load_task_treeview(self, *event):
+        """
+        Loads tasks for the selected project into the task treeview.
+
+        Parameters:
+        - event: Event arguments (optional).
+        """
         selected_project = self.tasks.get()
         self.task_tree.delete(*self.task_tree.get_children())  # Clear existing data
         if selected_project:
             t = Task()
             tasks_for_project = t.get_all_tasks(selected_project)
+            tasks_for_project = self.wrap_all_rows(tasks_for_project)
             # Insert tasks into the treeview
             for task in tasks_for_project:
                 self.task_tree.insert("", "end", values=task)
+        #self.refresh_project_tree(selected_project)
+
+
+    def refresh_project_tree(self, project_name):
+        """
+        Refreshes the project treeview to highlight the given project.
+
+        Parameters:
+        - project_name (str): The name of the project to be highlighted.
+        """
+        for i in self.project_tree.get_children():
+            project = self.project_tree.item(i, "values")[0]
+            if project == project_name:
+                self.project_tree.selection_set(i)
+                self.project_tree.selection_add(i)
+                self.project_tree.focus(i)
 
     def assign_task_popup(self):
+        """
+        Opens a popup window for assigning a task to a project member.
+        """
         self.selected_item = self.task_tree.selection()
         if not self.selected_item:
             messagebox.showerror("Error", "Please select a task.")
@@ -881,48 +1346,41 @@ class MainPage(tk.Toplevel):
         popup = tk.Toplevel(self)
         popup.title("Reassign Task")
 
-    def optionMenu_projectSelection(self, project):
-        # project = project_clicked.get()
-        # self.update_percent_complete(project)
-        # self.show_description(project)
-        self.show_all_task_info()
+    def wrap(self,text, length=60):
+        """
+        Wraps the given text to fit within a specified length.
 
-    def optionMenu_statusSelection(self, status):
-        self.status = self.status_clicked.get()
-        print()
+        Parameters:
+        - text (str): The text to wrap.
+        - length (int): The maximum length of each line (default is 60).
 
-    # def update_percent_complete(self, project):
-    #     """ """
-    #     self.percent = Project.get_percentage_complete(self, project)
-    #     self.project_percent_box.config(state='normal')
-    #     self.project_percent_box.delete(0, tk.END)
-    #     self.project_percent_box.insert(0, self.percent)
-    #     self.project_percent_box.config(state='readonly')
-
+        Returns:
+        - str: The wrapped text.
+        """
+        return '\n'.join(textwrap.wrap(text, length))
     def show_all_project_info(self):
+        """
+         Displays information about all projects in the project treeview.
+         """
         p = Project()
-        self.projects = p.get_all_project_info()
-        for project in self.projects:
+        projects = p.get_all_project_info()
+        projects = self.wrap_all_rows(projects)
+        for project in projects:
             self.project_tree.insert("", "end", values=project)
 
-    # def show_all_task_info(self, projectName):
-    #     t = Task()
-    #     self.tasks = t.get_all_tasks(projectName)
-    #     for task in self.tasks:
-    #         self.task_tree.insert("", "end", values=task)
-    def show_description(self, project):
-
-        self.description = Project.get_description(project)
-        self.description_text.delete('1.0', tk.END)  # Clear previous description
-        self.description_text.insert(tk.END, self.description)
 
     def add_project_popup(self):
+        """
+        Displays a popup window for adding a new project.
+        """
         popup = tk.Toplevel(self)
         popup.title("Add New Project")
+        # Add validation to limit task name to thirty characters
+        validation = self.register(self.validate_max_characters_thirty)
 
         # Labels and entry fields for project details
-        tk.Label(popup, text="Project Name:").grid(row=0, column=0, padx=5, pady=5)
-        self.project_name_entry = tk.Entry(popup)
+        tk.Label(popup, text="Project Name (max 30):").grid(row=0, column=0, padx=5, pady=5)
+        self.project_name_entry = tk.Entry(popup, validate="key", validatecommand=(validation, "%P"))
         self.project_name_entry.grid(row=0, column=1, padx=5, pady=5)
 
         tk.Label(popup, text="Status:").grid(row=1, column=0, padx=5, pady=5)
@@ -960,6 +1418,9 @@ class MainPage(tk.Toplevel):
         self.save_button.grid(row=6, columnspan=2, padx=5, pady=10)
 
     def add_tasks_popup(self):
+        """
+        Displays a popup window for adding new tasks to a project.
+        """
         self.selected_project = self.tasks.get()
         if not self.selected_project:
             messagebox.showerror("Error", "Please select a project.")
@@ -1005,6 +1466,16 @@ class MainPage(tk.Toplevel):
         self.save_button.grid(row=6, columnspan=2, padx=5, pady=10)
 
     def save_new_task(self, task_name, project_name, status, description, popup):
+        """
+         Saves a new task to the database and updates related UI elements.
+
+         Parameters:
+         - task_name (str): The name of the task.
+         - project_name (str): The name of the project.
+         - status (str): The status of the task.
+         - description (str): The description of the task.
+         - popup: The popup window object.
+         """
         if not (task_name and status and description and project_name and self.members_listbox.curselection()):
             messagebox.showerror("Error", "Please fill in all fields.")
             return
@@ -1022,14 +1493,27 @@ class MainPage(tk.Toplevel):
             print(project_name, task_name, description, status, assigned_to)
             t.create_task(project_name, task_name, description, status, assigned_to)
             e = Email()
-            e.send_task_assignmnent_email(assigned_to, project_name)
-            self.update_task_treeview()
+            e.send_task_assignment_email(assigned_to, project_name)
+            self.load_task_treeview()
+            p = Project()
+            p.update_percentage_complete(project_name)
+            self.update_project_treeview()
             popup.destroy()
         except Exception as e:
             messagebox.showerror("Error", f"An error occurred: {str(e)}")
 
     # Function to save new project to the database and update Treeview
     def save_new_project(self, project_name, status, description, owner, popup):
+        """
+        Saves a new project to the database and updates related UI elements.
+
+        Parameters:
+        - project_name (str): The name of the project.
+        - status (str): The status of the project.
+        - description (str): The description of the project.
+        - owner (str): The owner of the project.
+        - popup: The popup window object.
+        """
         if not (project_name and status and description and owner and self.members_listbox.curselection()):
             messagebox.showerror("Error", "Please fill in all fields.")
             return
@@ -1064,27 +1548,60 @@ class MainPage(tk.Toplevel):
 
     # Function to update Treeview with new project
     def update_project_treeview(self):
+        """
+        Updates the project treeview with new projects.
+        """
         self.project_tree.delete(*self.project_tree.get_children())
         self.show_all_project_info()
 
     def get_usernames(self):
+        """
+        Retrieves a list of usernames from the database.
+
+        Returns:
+        - list: A list of usernames.
+        """
         l = Login()
         self.user_list = l.get_users()
         print(self.user_list)
         return self.user_list
 
     def get_project_members(self, projectName):
+        """
+        Retrieves a list of members associated with a project from the database.
+
+        Parameters:
+        - projectName (str): The name of the project.
+
+        Returns:
+        - list: A list of project members.
+        """
         p = Project()
         members = p.get_project_members(projectName)
         return members
 
     def get_unassigned_members_for_project(self, project_name):
+        """
+        Retrieves a list of unassigned members for a project.
+
+        Parameters:
+        - project_name (str): The name of the project.
+
+        Returns:
+        - list: A list of unassigned members.
+        """
         users = self.get_usernames()
         members = self.get_project_members(project_name)
         unnasigned_members = list((set(users) | set(members)) - (set(users) & set(members)))
         return unnasigned_members
 
     def search_projects(self, event):
+        """
+        Searches for projects based on user input and updates the project treeview accordingly.
+
+        Parameters:
+        - event: The event trigger object.
+        """
         query = self.search_entry.get().lower()
         for child in self.project_tree.get_children():
             project_name = self.project_tree.item(child, "values")[1].lower()
@@ -1096,6 +1613,14 @@ class MainPage(tk.Toplevel):
                 self.project_tree.selection_remove(child)
 
     def treeview_sort_column(self, tv, col, reverse):
+        """
+        Sorts the columns in the treeview widget.
+
+        Parameters:
+        - tv: The treeview widget.
+        - col: The column to sort.
+        - reverse (bool): Whether to sort in reverse order.
+        """
         l = [(tv.set(k, col), k) for k in tv.get_children('')]
         l.sort(reverse=reverse)
         # rearrange items in sorted positions
@@ -1105,14 +1630,3 @@ class MainPage(tk.Toplevel):
         tv.heading(col, command=lambda: self.treeview_sort_column(tv, col, not reverse))
 
 
-def main():
-    root = tk.Tk()
-    root.withdraw()  # Hide the root window initially
-    login_page = LoginPage(root)
-
-    # main_page = MainPage(root)  # Create an instance of MainPage but keep it hidden initially
-    root.mainloop()
-
-
-if __name__ == '__main__':
-    main()

@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module task</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">task</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Ckarlg%5Cpycharmprojects%5Cprojectmanagementsystem%5Ctask.py">c:\users\karlg\pycharmprojects\projectmanagementsystem\task.py</a></td></tr></table>
+    <p></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="pandas.html">pandas</a><br>
+</td><td class="multicolumn"><a href="sqlite3.html">sqlite3</a><br>
+</td><td class="multicolumn"></td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor index-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Classes</strong></td></tr>
+    
+<tr><td class="decor index-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl>
+<dt class="heading-text"><a href="builtins.html#object">builtins.object</a>
+</dt><dd>
+<dl>
+<dt class="heading-text"><a href="task.html#Task">Task</a>
+</dt></dl>
+</dd>
+</dl>
+ <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="Task">class <strong>Task</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code">Class&nbsp;representing&nbsp;a&nbsp;task&nbsp;in&nbsp;a&nbsp;project&nbsp;management&nbsp;system.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None<br>
+&nbsp;<br>
+Methods:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-create_task">create_task</a>(project_name,&nbsp;task_name,&nbsp;description,&nbsp;status,&nbsp;assigned):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates&nbsp;a&nbsp;new&nbsp;task&nbsp;in&nbsp;the&nbsp;database&nbsp;with&nbsp;the&nbsp;provided&nbsp;details.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-get_task">get_task</a>(task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Retrieves&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;task&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;given&nbsp;task&nbsp;ID.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-delete_task">delete_task</a>(task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;De;etes&nbsp;the&nbsp;task&nbsp;from&nbsp;the&nbsp;database.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-update_task_start_and_end_dates">update_task_start_and_end_dates</a>(task_id,&nbsp;status):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Updates&nbsp;the&nbsp;start&nbsp;and&nbsp;end&nbsp;dates&nbsp;of&nbsp;the&nbsp;task&nbsp;based&nbsp;on&nbsp;the&nbsp;provided&nbsp;status.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-get_project_for_task">get_project_for_task</a>(task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Retrieves&nbsp;the&nbsp;project&nbsp;name&nbsp;associated&nbsp;with&nbsp;the&nbsp;given&nbsp;task&nbsp;ID.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-edit_task">edit_task</a>(task_id,&nbsp;task_name,&nbsp;description,&nbsp;status,&nbsp;progress,&nbsp;assigned,&nbsp;comment):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Modifies&nbsp;the&nbsp;details&nbsp;of&nbsp;an&nbsp;existing&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-set_task_percent_complete">set_task_percent_complete</a>(task_id,&nbsp;progress):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets&nbsp;the&nbsp;percentage&nbsp;completion&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-set_start_date">set_start_date</a>(task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets&nbsp;the&nbsp;start&nbsp;date&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-set_end_date">set_end_date</a>(task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets&nbsp;the&nbsp;end&nbsp;date&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-delete_task_end_date">delete_task_end_date</a>(task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Deletes&nbsp;the&nbsp;end&nbsp;date&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-add_comment">add_comment</a>(comment,&nbsp;task_id,&nbsp;username):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Adds&nbsp;a&nbsp;comment&nbsp;to&nbsp;the&nbsp;task&nbsp;with&nbsp;the&nbsp;given&nbsp;ID.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-get_all_tasks">get_all_tasks</a>(projectName):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Retrieves&nbsp;all&nbsp;tasks&nbsp;associated&nbsp;with&nbsp;the&nbsp;specified&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-get_percentage_complete">get_percentage_complete</a>(task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Retrieves&nbsp;the&nbsp;percentage&nbsp;completion&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-set_percentage_complete">set_percentage_complete</a>(perc,&nbsp;task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets&nbsp;the&nbsp;percentage&nbsp;completion&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-get_status">get_status</a>(task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Retrieves&nbsp;the&nbsp;status&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-set_status">set_status</a>(status,&nbsp;task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets&nbsp;the&nbsp;status&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-get_description">get_description</a>(task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Retrieves&nbsp;the&nbsp;description&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-set_description">set_description</a>(task_id,&nbsp;desc):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sets&nbsp;the&nbsp;description&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-assign_task">assign_task</a>(task_id,&nbsp;username):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Assigns&nbsp;the&nbsp;task&nbsp;to&nbsp;the&nbsp;specified&nbsp;user.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-is_assigned_to">is_assigned_to</a>(task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Checks&nbsp;if&nbsp;the&nbsp;task&nbsp;is&nbsp;assigned&nbsp;to&nbsp;any&nbsp;user.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Task-get_owner_from_task">get_owner_from_task</a>(task_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Retrieves&nbsp;the&nbsp;owner&nbsp;of&nbsp;the&nbsp;project&nbsp;associated&nbsp;with&nbsp;the&nbsp;given&nbsp;task.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="Task-add_comment"><strong>add_comment</strong></a>(self, comment: str, task_id: int, username: str) -&gt; bool</dt><dd><span class="code">Adds&nbsp;a&nbsp;comment&nbsp;to&nbsp;the&nbsp;task&nbsp;with&nbsp;the&nbsp;given&nbsp;ID.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;comment&nbsp;(str):&nbsp;The&nbsp;comment&nbsp;to&nbsp;be&nbsp;added.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;(str):&nbsp;The&nbsp;username&nbsp;of&nbsp;the&nbsp;user&nbsp;adding&nbsp;the&nbsp;comment.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool:&nbsp;True&nbsp;if&nbsp;the&nbsp;comment&nbsp;was&nbsp;added&nbsp;successfully,&nbsp;False&nbsp;otherwise.</span></dd></dl>
+
+<dl><dt><a name="Task-assign_task"><strong>assign_task</strong></a>(self, task_id: int, username: str) -&gt; None</dt><dd><span class="code">Assigns&nbsp;the&nbsp;task&nbsp;to&nbsp;the&nbsp;specified&nbsp;user.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;(str):&nbsp;The&nbsp;username&nbsp;of&nbsp;the&nbsp;user&nbsp;to&nbsp;whom&nbsp;the&nbsp;task&nbsp;is&nbsp;assigned.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Task-create_task"><strong>create_task</strong></a>(self, project_name: str, task_name: str, description: str, status: str, assigned: str) -&gt; None</dt><dd><span class="code">Creates&nbsp;a&nbsp;new&nbsp;task&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project&nbsp;to&nbsp;which&nbsp;the&nbsp;task&nbsp;belongs.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;(str):&nbsp;Description&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status&nbsp;(str):&nbsp;Current&nbsp;status&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;assigned&nbsp;(str):&nbsp;Username&nbsp;of&nbsp;the&nbsp;user&nbsp;to&nbsp;whom&nbsp;the&nbsp;task&nbsp;is&nbsp;assigned.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Task-delete_task"><strong>delete_task</strong></a>(self, task_id)</dt><dd><span class="code">Deletes&nbsp;the&nbsp;task&nbsp;from&nbsp;the&nbsp;database.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Task-delete_task_end_date"><strong>delete_task_end_date</strong></a>(self, task_id: int) -&gt; None</dt><dd><span class="code">Deletes&nbsp;the&nbsp;end&nbsp;date&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Task-edit_task"><strong>edit_task</strong></a>(self, task_id: int, task_name: str, description: str, status: str, progress: int, assigned: str, comment: str) -&gt; None</dt><dd><span class="code">Modifies&nbsp;the&nbsp;details&nbsp;of&nbsp;an&nbsp;existing&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task&nbsp;to&nbsp;be&nbsp;edited.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_name&nbsp;(str):&nbsp;New&nbsp;name&nbsp;for&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;(str):&nbsp;New&nbsp;description&nbsp;for&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status&nbsp;(str):&nbsp;New&nbsp;status&nbsp;for&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;progress&nbsp;(int):&nbsp;New&nbsp;progress&nbsp;percentage&nbsp;for&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;assigned&nbsp;(str):&nbsp;New&nbsp;user&nbsp;to&nbsp;whom&nbsp;the&nbsp;task&nbsp;is&nbsp;assigned.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;comment&nbsp;(str):&nbsp;New&nbsp;comment&nbsp;for&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Task-get_all_tasks"><strong>get_all_tasks</strong></a>(self, projectName: str) -&gt; list</dt><dd><span class="code">Retrieves&nbsp;all&nbsp;tasks&nbsp;associated&nbsp;with&nbsp;the&nbsp;specified&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;projectName&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list:&nbsp;A&nbsp;list&nbsp;of&nbsp;tuples&nbsp;containing&nbsp;details&nbsp;of&nbsp;all&nbsp;tasks&nbsp;associated&nbsp;with&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Task-get_description"><strong>get_description</strong></a>(self, task_id: int) -&gt; str</dt><dd><span class="code">Retrieves&nbsp;the&nbsp;description&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;The&nbsp;description&nbsp;of&nbsp;the&nbsp;task.</span></dd></dl>
+
+<dl><dt><a name="Task-get_owner_from_task"><strong>get_owner_from_task</strong></a>(self, task_id: int) -&gt; str</dt><dd><span class="code">Retrieves&nbsp;the&nbsp;owner&nbsp;of&nbsp;the&nbsp;project&nbsp;associated&nbsp;with&nbsp;the&nbsp;given&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;The&nbsp;owner&nbsp;of&nbsp;the&nbsp;project&nbsp;associated&nbsp;with&nbsp;the&nbsp;task.</span></dd></dl>
+
+<dl><dt><a name="Task-get_percentage_complete"><strong>get_percentage_complete</strong></a>(self, task_id: int) -&gt; int</dt><dd><span class="code">Retrieves&nbsp;the&nbsp;percentage&nbsp;completion&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int:&nbsp;The&nbsp;percentage&nbsp;completion&nbsp;of&nbsp;the&nbsp;task.</span></dd></dl>
+
+<dl><dt><a name="Task-get_project_for_task"><strong>get_project_for_task</strong></a>(self, task_id: int) -&gt; str</dt><dd><span class="code">Retrieves&nbsp;the&nbsp;project&nbsp;name&nbsp;associated&nbsp;with&nbsp;the&nbsp;given&nbsp;task&nbsp;ID.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project&nbsp;associated&nbsp;with&nbsp;the&nbsp;task.</span></dd></dl>
+
+<dl><dt><a name="Task-get_status"><strong>get_status</strong></a>(self, task_id: int) -&gt; str</dt><dd><span class="code">Retrieves&nbsp;the&nbsp;status&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;The&nbsp;status&nbsp;of&nbsp;the&nbsp;task.</span></dd></dl>
+
+<dl><dt><a name="Task-get_task"><strong>get_task</strong></a>(self, task_id: int) -&gt; str</dt><dd><span class="code">Retrieves&nbsp;the&nbsp;name&nbsp;of&nbsp;the&nbsp;task&nbsp;corresponding&nbsp;to&nbsp;the&nbsp;given&nbsp;task&nbsp;ID.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;task.</span></dd></dl>
+
+<dl><dt><a name="Task-is_assigned_to"><strong>is_assigned_to</strong></a>(self, task_id: int) -&gt; str</dt><dd><span class="code">Checks&nbsp;if&nbsp;the&nbsp;task&nbsp;is&nbsp;assigned&nbsp;to&nbsp;any&nbsp;user.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;The&nbsp;username&nbsp;of&nbsp;the&nbsp;user&nbsp;to&nbsp;whom&nbsp;the&nbsp;task&nbsp;is&nbsp;assigned,&nbsp;or&nbsp;None&nbsp;if&nbsp;unassigned.</span></dd></dl>
+
+<dl><dt><a name="Task-set_description"><strong>set_description</strong></a>(self, task_id: int, desc: str) -&gt; None</dt><dd><span class="code">Sets&nbsp;the&nbsp;description&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;desc&nbsp;(str):&nbsp;The&nbsp;new&nbsp;description&nbsp;for&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Task-set_end_date"><strong>set_end_date</strong></a>(self, task_id: int) -&gt; None</dt><dd><span class="code">Sets&nbsp;the&nbsp;end&nbsp;date&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Task-set_percentage_complete"><strong>set_percentage_complete</strong></a>(self, perc: int, task_id: int) -&gt; None</dt><dd><span class="code">Sets&nbsp;the&nbsp;percentage&nbsp;completion&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;perc&nbsp;(int):&nbsp;The&nbsp;new&nbsp;percentage&nbsp;completion.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Task-set_start_date"><strong>set_start_date</strong></a>(self, task_id: int) -&gt; None</dt><dd><span class="code">Sets&nbsp;the&nbsp;start&nbsp;date&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Task-set_status"><strong>set_status</strong></a>(self, status: str, task_id: int) -&gt; None</dt><dd><span class="code">Sets&nbsp;the&nbsp;status&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status&nbsp;(str):&nbsp;The&nbsp;new&nbsp;status&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Task-set_task_percent_complete"><strong>set_task_percent_complete</strong></a>(self, task_id: int, progress: int) -&gt; None</dt><dd><span class="code">Sets&nbsp;the&nbsp;percentage&nbsp;completion&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;progress&nbsp;(int):&nbsp;The&nbsp;new&nbsp;progress&nbsp;percentage.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<dl><dt><a name="Task-update_task_start_and_end_dates"><strong>update_task_start_and_end_dates</strong></a>(self, task_id: int, status: str) -&gt; None</dt><dd><span class="code">Updates&nbsp;the&nbsp;start&nbsp;and&nbsp;end&nbsp;dates&nbsp;of&nbsp;the&nbsp;task&nbsp;based&nbsp;on&nbsp;the&nbsp;provided&nbsp;status.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;task_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status&nbsp;(str):&nbsp;The&nbsp;new&nbsp;status&nbsp;of&nbsp;the&nbsp;task.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object</span></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>

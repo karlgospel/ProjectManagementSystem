@@ -5,92 +5,104 @@ import sqlite3
 import bcrypt
 import pandas as pd
 import datetime
+
 class SuperAdmin(TeamMember):
-    #
-    # def __init__(self):
-    #     super().__init__(username, email, admin)
+    """
+    Class representing a super admin in a project management system.
 
-    # def set_project_status(self, projectName, status):
-    #     conn = sqlite3.connect("project.db")
-    #     cur = conn.cursor()
-    #     sql = "UPDATE Project SET STATUS = (?) WHERE PROJECT_ID = (?)"
-    #     cur.execute(sql, [status, projectName])
-    #     conn.commit()
-    #     conn.close()
-    #     if status == 'In-Progress':
-    #         self.set_project_start_date(projectName)
-    #     else:
-    #         pass
-    #     #print(pd.read_sql("SELECT * FROM Project", conn))
+    Attributes:
+        None
 
-    def create_login(self, username, password,  email, is_admin):
+    Methods:
+        create_login(username, password, email, is_admin):
+            Creates a new login for a user.
+        set_project_start_date(projectName):
+            Sets the start date for a project.
+    """
 
+    def create_login(self, username: str, password: str, email: str, is_admin: int) -> str:
+        """
+        Creates a new login for a user.
+
+        Parameters:
+            username (str): The username of the user.
+            password (str): The password for the user.
+            email (str): The email address of the user.
+            is_admin (int): Flag indicating if the user is an admin (1 for admin, 0 for regular user).
+
+        Returns:
+            str: A message indicating the outcome of the operation.
+        """
         # Validate email
-        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-            print("Invalid email format")
+        if not self.validate_email(email):
             return 'Invalid email address'
-        # Confirm username is not taken
+
         l = Login()
+        # Check password is not empty
         if not password:
             return 'Please enter a valid password'
+        # Confirm username is not taken
         if l.check_username_distinct(username):
             pass
         else:
-            print('username taken')
             return 'Username is already taken'
+
+        # Connect to the database
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
 
+        # Hash the password
         hashable_password = password.encode('utf-8')
         hashed_password = bcrypt.hashpw(hashable_password, bcrypt.gensalt())
 
+        # Insert login details into the database
         login_details = (username, hashed_password, is_admin, email)
         sql = ''' INSERT INTO Login(USERNAME, PASSWORD, ADMIN, EMAIL)
                 VALUES(?,?,?,?) '''
         try:
             cur.execute(sql, login_details)
-            print(pd.read_sql("SELECT * FROM Login", conn))
             conn.commit()
             conn.close()
         except Exception as e:
             return 'Invalid details'
 
-    def set_project_start_date(self, projectName):
+    def validate_email(self,email: str) -> bool:
+        """
+        Validates an email address.
+
+        Parameters:
+            email (str): The email address to be validated.
+
+        Returns:
+            bool: True if the email address is valid, False otherwise.
+        """
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            return False
+        return True
+
+    def set_project_start_date(self, projectName: str) -> None:
+        """
+        Sets the start date for a project.
+
+        Parameters:
+            projectName (str): The name of the project.
+
+        Returns:
+            None
+        """
+        # Connect to the database
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
+
+        # Get the current datetime
         now = datetime.datetime.now()
+
+        # Update the project start date in the database
         sd = (now, projectName)
         sql = "UPDATE Project SET START_DATE = (?) WHERE PROJECT_NAME = (?)"
         cur.execute(sql, sd)
         print(pd.read_sql("SELECT * FROM Project", conn))
 
+        # Commit changes and close connection
         conn.commit()
         conn.close()
-
-    # def create_login(self, username, password,  email, is_admin):
-    #
-    #     # Validate email
-    #     if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-    #         print("Invalid email format")
-    #         return False
-    #     # Confirm username is not taken
-    #     l = Login()
-    #     if l.check_username_distinct(username):
-    #         pass
-    #     else:
-    #         print('username taken')
-    #         return False
-    #     conn = sqlite3.connect("project.db")
-    #     cur = conn.cursor()
-    #
-    #     hashable_password = password.encode('utf-8')
-    #     hashed_password = bcrypt.hashpw(hashable_password, bcrypt.gensalt())
-    #
-    #     login_details = (username, hashed_password, is_admin, email)
-    #     sql = ''' INSERT INTO Login(USERNAME, PASSWORD, ADMIN, EMAIL)
-    #             VALUES(?,?,?,?) '''
-    #     cur.execute(sql, login_details)
-    #     print(pd.read_sql("SELECT * FROM Login", conn))
-    #     conn.commit()
-    #     conn.close()
-

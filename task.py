@@ -3,37 +3,143 @@ import pandas as pd
 from datetime import datetime
 from project import Project
 
-
 class Task:
+    """
+    Class representing a task in a project management system.
 
-    def create_task(self, project_name, task_name, description, status, assigned):
+    Attributes:
+        None
+
+    Methods:
+        create_task(project_name, task_name, description, status, assigned):
+            Creates a new task in the database with the provided details.
+        get_task(task_id):
+            Retrieves the name of the task corresponding to the given task ID.
+        delete_task(task_id):
+            De;etes the task from the database.
+        update_task_start_and_end_dates(task_id, status):
+            Updates the start and end dates of the task based on the provided status.
+        get_project_for_task(task_id):
+            Retrieves the project name associated with the given task ID.
+        edit_task(task_id, task_name, description, status, progress, assigned, comment):
+            Modifies the details of an existing task.
+        set_task_percent_complete(task_id, progress):
+            Sets the percentage completion of the task.
+        set_start_date(task_id):
+            Sets the start date of the task.
+        set_end_date(task_id):
+            Sets the end date of the task.
+        delete_task_end_date(task_id):
+            Deletes the end date of the task.
+        add_comment(comment, task_id, username):
+            Adds a comment to the task with the given ID.
+        get_all_tasks(projectName):
+            Retrieves all tasks associated with the specified project.
+        get_percentage_complete(task_id):
+            Retrieves the percentage completion of the task.
+        set_percentage_complete(perc, task_id):
+            Sets the percentage completion of the task.
+        get_status(task_id):
+            Retrieves the status of the task.
+        set_status(status, task_id):
+            Sets the status of the task.
+        get_description(task_id):
+            Retrieves the description of the task.
+        set_description(task_id, desc):
+            Sets the description of the task.
+        assign_task(task_id, username):
+            Assigns the task to the specified user.
+        is_assigned_to(task_id):
+            Checks if the task is assigned to any user.
+        get_owner_from_task(task_id):
+            Retrieves the owner of the project associated with the given task.
+    """
+
+    def create_task(self, project_name: str, task_name: str, description: str, status: str, assigned: str) -> None:
+        """
+        Creates a new task in the database.
+
+        Parameters:
+            project_name (str): The name of the project to which the task belongs.
+            task_name (str): The name of the task.
+            description (str): Description of the task.
+            status (str): Current status of the task.
+            assigned (str): Username of the user to whom the task is assigned.
+
+        Returns:
+            None
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         p = Project()
         project_id = p.get_project_id(project_name)
-        task = (project_id, description, status, 0, assigned, task_name)
+        # Strip whitespace for task name
+        task = (project_id, description, status, 0, assigned, task_name.strip())
         sql = ''' INSERT INTO Tasks (PROJECT_ID, DESCRIPTION, STATUS, PERCENTAGE_COMPLETE, ASSIGNED_TO, TASK_NAME)
                         VALUES(?,?,?,?,?,?) '''
         cur.execute(sql, task)
-        print('PROJECT  create')
-        print(pd.read_sql("SELECT * FROM Tasks", conn))
         conn.commit()
         conn.close()
+        if status == 'In-Progress':
+            self.set_start_date(cur.lastrowid)
 
-    def get_task(self, taskID):
+
+    def get_task(self, task_id: int) -> str:
+        """
+        Retrieves the name of the task corresponding to the given task ID.
+
+        Parameters:
+            task_id (int): The ID of the task.
+
+        Returns:
+            str: The name of the task.
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = """   SELECT  t.TASK_NAME
                             FROM Tasks t 
                             WHERE t.TASK_ID = (?)"""
-        cur.execute(sql, [taskID])
+        cur.execute(sql, [task_id])
         task = cur.fetchone()
         task = task[0]
         conn.commit()
         conn.close()
         return task
 
-    def update_task_start_and_end_dates(self, task_id, status):
+    def delete_task(self,task_id):
+        """
+        Deletes the task from the database.
+
+        Parameters:
+         task_id (int): The ID of the task.
+
+        Returns:
+            None
+        """
+        conn = sqlite3.connect("project.db")
+        cur = conn.cursor()
+        sql = """DELETE FROM Tasks WHERE TASK_ID = (?)"""
+        try:
+            cur.execute(sql, [task_id])
+            conn.commit()
+            conn.close()
+        except sqlite3.Error as e:
+            print("Error deleting task:", e)
+            conn.commit()
+            conn.close()
+
+
+    def update_task_start_and_end_dates(self, task_id: int, status: str) -> None:
+        """
+        Updates the start and end dates of the task based on the provided status.
+
+        Parameters:
+            task_id (int): The ID of the task.
+            status (str): The new status of the task.
+
+        Returns:
+            None
+        """
         # Set start and end dates based on if status has been updated
         # Users options are limited to minimise errors
         try:
@@ -47,10 +153,20 @@ class Task:
                 self.set_end_date(task_id)
             elif current_status == 'Completed' and status == 'In-Progress':
                 self.delete_task_end_date(task_id)
+
         except sqlite3.Error as e:
             print("Error updating task start and end dates:", e)
 
-    def get_project_for_task(self, task_id):
+    def get_project_for_task(self, task_id: int) -> str:
+        """
+        Retrieves the project name associated with the given task ID.
+
+        Parameters:
+            task_id (int): The ID of the task.
+
+        Returns:
+            str: The name of the project associated with the task.
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = """   SELECT p.PROJECT_NAME 
@@ -66,7 +182,22 @@ class Task:
         conn.close()
         return project_name
 
-    def edit_task(self, task_id, task_name, description, status, progress, assigned, comment):
+    def edit_task(self, task_id: int, task_name: str, description: str, status: str, progress: int, assigned: str, comment: str) -> None:
+        """
+        Modifies the details of an existing task.
+
+        Parameters:
+            task_id (int): The ID of the task to be edited.
+            task_name (str): New name for the task.
+            description (str): New description for the task.
+            status (str): New status for the task.
+            progress (int): New progress percentage for the task.
+            assigned (str): New user to whom the task is assigned.
+            comment (str): New comment for the task.
+
+        Returns:
+            None
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
 
@@ -76,7 +207,7 @@ class Task:
             else:
                 self.set_task_percent_complete(task_id, progress)
             self.update_task_start_and_end_dates(task_id, status)
-            task_details = (task_name, description, status, assigned, comment, task_id)
+            task_details = (task_name.strip(), description, status, assigned, comment, task_id)
             sql = """UPDATE Tasks 
                         SET TASK_NAME = (?), 
                         DESCRIPTION = (?), 
@@ -93,7 +224,17 @@ class Task:
             conn.commit()
             conn.close()
 
-    def set_task_percent_complete(self, task_id, progress):
+    def set_task_percent_complete(self, task_id: int, progress: int) -> None:
+        """
+        Sets the percentage completion of the task.
+
+        Parameters:
+            task_id (int): The ID of the task.
+            progress (int): The new progress percentage.
+
+        Returns:
+            None
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         try:
@@ -110,7 +251,16 @@ class Task:
         except Exception as e:
             print("Error setting task percent complete :", e)
 
-    def set_start_date(self, task_id):
+    def set_start_date(self, task_id: int) -> None:
+        """
+        Sets the start date of the task.
+
+        Parameters:
+            task_id (int): The ID of the task.
+
+        Returns:
+            None
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         try:
@@ -129,7 +279,17 @@ class Task:
             print("Error setting task start date:", e)
             conn.commit()
             conn.close()
-    def set_end_date(self, task_id):
+
+    def set_end_date(self, task_id: int) -> None:
+        """
+        Sets the end date of the task.
+
+        Parameters:
+            task_id (int): The ID of the task.
+
+        Returns:
+            None
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         try:
@@ -148,7 +308,16 @@ class Task:
             conn.commit()
             conn.close()
 
-    def delete_task_end_date(self, task_id):
+    def delete_task_end_date(self, task_id: int) -> None:
+        """
+        Deletes the end date of the task.
+
+        Parameters:
+            task_id (int): The ID of the task.
+
+        Returns:
+            None
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = """   UPDATE Tasks 
@@ -158,7 +327,18 @@ class Task:
         conn.commit()
         conn.close()
 
-    def add_comment(self, comment, task_id, username):
+    def add_comment(self, comment: str, task_id: int, username: str) -> bool:
+        """
+        Adds a comment to the task with the given ID.
+
+        Parameters:
+            comment (str): The comment to be added.
+            task_id (int): The ID of the task.
+            username (str): The username of the user adding the comment.
+
+        Returns:
+            bool: True if the comment was added successfully, False otherwise.
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
 
@@ -171,12 +351,21 @@ class Task:
             print(pd.read_sql("SELECT * FROM TaskMessages", conn))
             conn.commit()
             conn.close()
+            return True
         except Exception as e:
             print('Error adding task comment', e)
             return False
 
+    def get_all_tasks(self, projectName: str) -> list:
+        """
+        Retrieves all tasks associated with the specified project.
 
-    def get_all_tasks(self, projectName):
+        Parameters:
+            projectName (str): The name of the project.
+
+        Returns:
+            list: A list of tuples containing details of all tasks associated with the project.
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = """SELECT t.TASK_ID,
@@ -197,21 +386,40 @@ class Task:
         conn.close()
         return tasks
 
-    def get_percentage_complete(self, taskID):
+    def get_percentage_complete(self, task_id: int) -> int:
+        """
+        Retrieves the percentage completion of the task.
+
+        Parameters:
+            task_id (int): The ID of the task.
+
+        Returns:
+            int: The percentage completion of the task.
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = "SELECT PERCENTAGE_COMPLETE FROM Tasks WHERE TASK_ID = (?)"
-        cur.execute(sql, taskID)
+        cur.execute(sql, task_id)
         per = cur.fetchone()
         percentage = per[0]
         conn.commit()
         conn.close()
         return percentage
 
-    def set_percentage_complete(self, perc, taskID):
+    def set_percentage_complete(self, perc: int, task_id: int) -> None:
+        """
+        Sets the percentage completion of the task.
+
+        Parameters:
+            perc (int): The new percentage completion.
+            task_id (int): The ID of the task.
+
+        Returns:
+            None
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
-        percent_complete = (perc, taskID)
+        percent_complete = (perc, task_id)
         # Insert new percentage complete
         sql = "UPDATE Tasks SET PERCENTAGE_COMPLETE = (?) WHERE TASK_ID = (?)"
         cur.execute(sql, percent_complete)
@@ -219,7 +427,16 @@ class Task:
         conn.commit()
         conn.close()
 
-    def get_status(self, task_id):
+    def get_status(self, task_id: int) -> str:
+        """
+        Retrieves the status of the task.
+
+        Parameters:
+            task_id (int): The ID of the task.
+
+        Returns:
+            str: The status of the task.
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = "SELECT STATUS FROM Tasks WHERE TASK_ID = (?)"
@@ -235,26 +452,43 @@ class Task:
             conn.commit()
             conn.close()
 
+    def set_status(self, status: str, task_id: int) -> None:
+        """
+        Sets the status of the task.
 
-    def set_status(self, status, taskID):
+        Parameters:
+            status (str): The new status of the task.
+            task_id (int): The ID of the task.
+
+        Returns:
+            None
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
-        new_status = (status, taskID)
+        new_status = (status, task_id)
         # Insert new percentage complete
         sql = "UPDATE Tasks SET STATUS = (?) WHERE TASK_ID = (?)"
         cur.execute(sql, new_status)
         conn.commit()
         conn.close()
         if status == 'Complete':
-            self.set_percentage_complete(100, taskID)
+            self.set_percentage_complete(100, task_id)
 
-    def get_description(self, taskID):
-        """Get the description of a task."""
+    def get_description(self, task_id: int) -> str:
+        """
+        Retrieves the description of the task.
+
+        Parameters:
+            task_id (int): The ID of the task.
+
+        Returns:
+            str: The description of the task.
+        """
         try:
             conn = sqlite3.connect('project.db')
             cur = conn.cursor()
             sql = "SELECT description FROM tasks WHERE TASK_ID = ?"
-            cur.execute(sql, (taskID,))
+            cur.execute(sql, (task_id,))
             description_tuple = cur.fetchone()
             if description_tuple:
                 description = description_tuple[0]
@@ -268,10 +502,20 @@ class Task:
         except sqlite3.Error as e:
             print("Error fetching task description:", e)
 
-    def set_description(self, taskID, desc):
+    def set_description(self, task_id: int, desc: str) -> None:
+        """
+        Sets the description of the task.
+
+        Parameters:
+            task_id (int): The ID of the task.
+            desc (str): The new description for the task.
+
+        Returns:
+            None
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
-        new_desc = ( desc, taskID)
+        new_desc = (desc, task_id)
         # Insert new percentage complete
         sql = "UPDATE Tasks SET DESCRIPTION = (?) WHERE TASK_ID = (?)"
         cur.execute(sql, new_desc)
@@ -279,10 +523,20 @@ class Task:
         conn.commit()
         conn.close()
 
-    def assign_task(self, taskID, username):
+    def assign_task(self, task_id: int, username: str) -> None:
+        """
+        Assigns the task to the specified user.
+
+        Parameters:
+            task_id (int): The ID of the task.
+            username (str): The username of the user to whom the task is assigned.
+
+        Returns:
+            None
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
-        assign = (username, taskID)
+        assign = (username, task_id)
         # Insert new percentage complete
         sql = "UPDATE Tasks SET ASSIGNED_TO = (?) WHERE TASK_ID = (?)"
         cur.execute(sql, assign)
@@ -290,7 +544,16 @@ class Task:
         conn.commit()
         conn.close()
 
-    def is_assigned_to(self, task_id):
+    def is_assigned_to(self, task_id: int) -> str:
+        """
+        Checks if the task is assigned to any user.
+
+        Parameters:
+            task_id (int): The ID of the task.
+
+        Returns:
+            str: The username of the user to whom the task is assigned, or None if unassigned.
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = "SELECT ASSIGNED_TO FROM Tasks WHERE TASK_ID = (?)"
@@ -306,7 +569,16 @@ class Task:
             conn.commit()
             conn.close()
 
-    def get_owner_from_task(self, task_id):
+    def get_owner_from_task(self, task_id: int) -> str:
+        """
+        Retrieves the owner of the project associated with the given task.
+
+        Parameters:
+            task_id (int): The ID of the task.
+
+        Returns:
+            str: The owner of the project associated with the task.
+        """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
         sql = """   SELECT p.OWNER 
@@ -324,5 +596,3 @@ class Task:
             print("Error fetching owner from task:", e)
             conn.commit()
             conn.close()
-
-

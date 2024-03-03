@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: module project</title>
+</head><body>
+
+<table class="heading">
+<tr class="heading-text decor">
+<td class="title">&nbsp;<br><strong class="title">project</strong></td>
+<td class="extra"><a href=".">index</a><br><a href="file:c%3A%5Cusers%5Ckarlg%5Cpycharmprojects%5Cprojectmanagementsystem%5Cproject.py">c:\users\karlg\pycharmprojects\projectmanagementsystem\project.py</a></td></tr></table>
+    <p></p>
+<p>
+<table class="section">
+<tr class="decor pkg-content-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Modules</strong></td></tr>
+    
+<tr><td class="decor pkg-content-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><table><tr><td class="multicolumn"><a href="matplotlib.dates.html">matplotlib.dates</a><br>
+<a href="numpy.html">numpy</a><br>
+</td><td class="multicolumn"><a href="pandas.html">pandas</a><br>
+<a href="matplotlib.pyplot.html">matplotlib.pyplot</a><br>
+</td><td class="multicolumn"><a href="sqlite3.html">sqlite3</a><br>
+</td><td class="multicolumn"></td></tr></table></td></tr></table><p>
+<table class="section">
+<tr class="decor index-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><strong class="bigsection">Classes</strong></td></tr>
+    
+<tr><td class="decor index-decor"><span class="code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></td><td>&nbsp;</td>
+<td class="singlecolumn"><dl>
+<dt class="heading-text"><a href="builtins.html#object">builtins.object</a>
+</dt><dd>
+<dl>
+<dt class="heading-text"><a href="project.html#Project">Project</a>
+</dt></dl>
+</dd>
+</dl>
+ <p>
+<table class="section">
+<tr class="decor title-decor heading-text">
+<td class="section-title" colspan=3>&nbsp;<br><a name="Project">class <strong>Project</strong></a>(<a href="builtins.html#object">builtins.object</a>)</td></tr>
+    
+<tr><td class="decor title-decor" rowspan=2><span class="code">&nbsp;&nbsp;&nbsp;</span></td>
+<td class="decor title-decor" colspan=2><span class="code">Class&nbsp;to&nbsp;handle&nbsp;project&nbsp;creation,&nbsp;editing,&nbsp;and&nbsp;retrieval.<br>
+&nbsp;<br>
+Attributes:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;None<br>
+&nbsp;<br>
+Methods:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-create_project">create_project</a>(project_name,&nbsp;owner,&nbsp;status,&nbsp;description):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Creates&nbsp;a&nbsp;project&nbsp;and&nbsp;adds&nbsp;it&nbsp;to&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-edit_project">edit_project</a>(old_project_name,&nbsp;new_project_name,&nbsp;owner,&nbsp;status,&nbsp;description):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Edit&nbsp;a&nbsp;project&nbsp;and&nbsp;update&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_all_projects">get_all_projects</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;the&nbsp;project&nbsp;names&nbsp;in&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_all_project_info">get_all_project_info</a>():<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;all&nbsp;data&nbsp;from&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_percentage_complete">get_percentage_complete</a>(project_name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;the&nbsp;percentage&nbsp;complete&nbsp;of&nbsp;a&nbsp;given&nbsp;project&nbsp;from&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_project_id">get_project_id</a>(project_name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;the&nbsp;ID&nbsp;related&nbsp;to&nbsp;a&nbsp;project&nbsp;from&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_project_members">get_project_members</a>(project_name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get&nbsp;the&nbsp;list&nbsp;of&nbsp;members&nbsp;associated&nbsp;with&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-add_members">add_members</a>(project_name,&nbsp;*members):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add&nbsp;members&nbsp;to&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-remove_members">remove_members</a>(project_name,&nbsp;username):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Remove&nbsp;a&nbsp;member&nbsp;from&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_project_task_count">get_project_task_count</a>(project_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get&nbsp;the&nbsp;count&nbsp;of&nbsp;tasks&nbsp;assigned&nbsp;to&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_project_completed_task_count">get_project_completed_task_count</a>(project_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get&nbsp;the&nbsp;count&nbsp;of&nbsp;completed&nbsp;tasks&nbsp;assigned&nbsp;to&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-update_percentage_complete">update_percentage_complete</a>(project_name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update&nbsp;the&nbsp;percentage&nbsp;completion&nbsp;of&nbsp;a&nbsp;project&nbsp;based&nbsp;on&nbsp;its&nbsp;tasks&nbsp;percentage&nbsp;completion.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_description">get_description</a>(project_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get&nbsp;the&nbsp;description&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-check_owner">check_owner</a>(user,&nbsp;project_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Check&nbsp;if&nbsp;a&nbsp;user&nbsp;is&nbsp;the&nbsp;owner&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-create_project_message">create_project_message</a>(project_name,&nbsp;message):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Create&nbsp;a&nbsp;message&nbsp;associated&nbsp;with&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-create_timeline">create_timeline</a>(project_name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Create&nbsp;a&nbsp;timeline&nbsp;plot&nbsp;for&nbsp;a&nbsp;project&nbsp;based&nbsp;on&nbsp;its&nbsp;messages.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_project_start_date">get_project_start_date</a>(project_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get&nbsp;the&nbsp;start&nbsp;date&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_project_end_date">get_project_end_date</a>(project_id):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get&nbsp;the&nbsp;end&nbsp;date&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-set_project_start_date">set_project_start_date</a>(project_name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set&nbsp;the&nbsp;start&nbsp;date&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-set_project_end_date">set_project_end_date</a>(project_name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set&nbsp;the&nbsp;end&nbsp;date&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-update_start_and_end_dates">update_start_and_end_dates</a>(project_name,&nbsp;status):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Update&nbsp;the&nbsp;start&nbsp;and&nbsp;end&nbsp;dates&nbsp;of&nbsp;a&nbsp;project&nbsp;based&nbsp;on&nbsp;its&nbsp;status.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-set_project_status">set_project_status</a>(project_name,&nbsp;status):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set&nbsp;the&nbsp;status&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_project_status">get_project_status</a>(project_name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get&nbsp;the&nbsp;status&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-delete_project_end_date">delete_project_end_date</a>(project_name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete&nbsp;the&nbsp;end&nbsp;date&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-delete_project">delete_project</a>(project_name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Delete&nbsp;a&nbsp;project&nbsp;from&nbsp;the&nbsp;database.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#Project-get_project_messages">get_project_messages</a>(project_name):<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get&nbsp;all&nbsp;messages&nbsp;associated&nbsp;with&nbsp;a&nbsp;project.<br>&nbsp;</span></td></tr>
+<tr><td>&nbsp;</td>
+<td class="singlecolumn">Methods defined here:<br>
+<dl><dt><a name="Project-add_members"><strong>add_members</strong></a>(self, project_name: str, *members: str)</dt><dd><span class="code">Add&nbsp;members&nbsp;to&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;*members&nbsp;(str):&nbsp;Variable&nbsp;length&nbsp;argument&nbsp;list&nbsp;of&nbsp;usernames&nbsp;to&nbsp;add.</span></dd></dl>
+
+<dl><dt><a name="Project-check_owner"><strong>check_owner</strong></a>(self, user: str, project_id: int) -&gt; bool</dt><dd><span class="code">Check&nbsp;if&nbsp;a&nbsp;user&nbsp;is&nbsp;the&nbsp;owner&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;user&nbsp;(str):&nbsp;The&nbsp;username&nbsp;of&nbsp;the&nbsp;user.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;bool:&nbsp;True&nbsp;if&nbsp;the&nbsp;user&nbsp;is&nbsp;the&nbsp;owner,&nbsp;False&nbsp;otherwise.</span></dd></dl>
+
+<dl><dt><a name="Project-create_project"><strong>create_project</strong></a>(self, project_name: str, owner: str, status: str, description: str)</dt><dd><span class="code">Creates&nbsp;a&nbsp;project&nbsp;and&nbsp;adds&nbsp;it&nbsp;to&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;owner&nbsp;(str):&nbsp;The&nbsp;owner&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status&nbsp;(str):&nbsp;The&nbsp;status&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;(str):&nbsp;The&nbsp;description&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-create_project_message"><strong>create_project_message</strong></a>(self, project_name: str, message: str)</dt><dd><span class="code">Create&nbsp;a&nbsp;message&nbsp;associated&nbsp;with&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;message&nbsp;(str):&nbsp;The&nbsp;message&nbsp;content.</span></dd></dl>
+
+<dl><dt><a name="Project-create_timeline"><strong>create_timeline</strong></a>(self, project_name: str)</dt><dd><span class="code">Create&nbsp;a&nbsp;timeline&nbsp;plot&nbsp;for&nbsp;a&nbsp;project&nbsp;based&nbsp;on&nbsp;its&nbsp;messages.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;fig:&nbsp;The&nbsp;matplotlib&nbsp;figure&nbsp;<a href="builtins.html#object">object</a>.</span></dd></dl>
+
+<dl><dt><a name="Project-delete_project"><strong>delete_project</strong></a>(self, project_name: str)</dt><dd><span class="code">Delete&nbsp;a&nbsp;project&nbsp;from&nbsp;the&nbsp;database.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-delete_project_end_date"><strong>delete_project_end_date</strong></a>(self, project_name: str)</dt><dd><span class="code">Delete&nbsp;the&nbsp;end&nbsp;date&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-edit_project"><strong>edit_project</strong></a>(self, old_project_name: str, new_project_name: str, owner: str, status: str, description: str)</dt><dd><span class="code">Edit&nbsp;a&nbsp;project&nbsp;and&nbsp;update&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;old_project_name&nbsp;(str):&nbsp;The&nbsp;current&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;new_project_name&nbsp;(str):&nbsp;The&nbsp;new&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;owner&nbsp;(str):&nbsp;The&nbsp;owner&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status&nbsp;(str):&nbsp;The&nbsp;status&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;description&nbsp;(str):&nbsp;The&nbsp;description&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-get_all_project_info"><strong>get_all_project_info</strong></a>(self) -&gt; list</dt><dd><span class="code">Returns&nbsp;all&nbsp;data&nbsp;from&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list:&nbsp;List&nbsp;of&nbsp;Tuples&nbsp;where&nbsp;each&nbsp;tuple&nbsp;contains&nbsp;an&nbsp;individual&nbsp;project's&nbsp;values.</span></dd></dl>
+
+<dl><dt><a name="Project-get_all_projects"><strong>get_all_projects</strong></a>(self) -&gt; list</dt><dd><span class="code">Returns&nbsp;a&nbsp;list&nbsp;of&nbsp;all&nbsp;the&nbsp;project&nbsp;names&nbsp;in&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list:&nbsp;All&nbsp;the&nbsp;project&nbsp;names&nbsp;in&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table.</span></dd></dl>
+
+<dl><dt><a name="Project-get_description"><strong>get_description</strong></a>(self, project_id: int) -&gt; str</dt><dd><span class="code">Get&nbsp;the&nbsp;description&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;The&nbsp;description&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-get_percentage_complete"><strong>get_percentage_complete</strong></a>(self, project_name: str) -&gt; str</dt><dd><span class="code">Returns&nbsp;the&nbsp;percentage&nbsp;complete&nbsp;of&nbsp;a&nbsp;given&nbsp;project&nbsp;from&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;The&nbsp;percentage&nbsp;complete&nbsp;of&nbsp;the&nbsp;given&nbsp;project&nbsp;with&nbsp;'%'&nbsp;concatenated.</span></dd></dl>
+
+<dl><dt><a name="Project-get_project_completed_task_count"><strong>get_project_completed_task_count</strong></a>(self, project_id: int) -&gt; int</dt><dd><span class="code">Get&nbsp;the&nbsp;count&nbsp;of&nbsp;completed&nbsp;tasks&nbsp;assigned&nbsp;to&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int:&nbsp;The&nbsp;count&nbsp;of&nbsp;completed&nbsp;tasks&nbsp;assigned&nbsp;to&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-get_project_end_date"><strong>get_project_end_date</strong></a>(self, project_id: int) -&gt; datetime.datetime</dt><dd><span class="code">Get&nbsp;the&nbsp;end&nbsp;date&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;datetime:&nbsp;The&nbsp;end&nbsp;date&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-get_project_id"><strong>get_project_id</strong></a>(self, project_name: str) -&gt; int</dt><dd><span class="code">Returns&nbsp;the&nbsp;ID&nbsp;related&nbsp;to&nbsp;a&nbsp;project&nbsp;from&nbsp;the&nbsp;<a href="#Project">Project</a>&nbsp;table&nbsp;in&nbsp;the&nbsp;database.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int&nbsp;:&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-get_project_members"><strong>get_project_members</strong></a>(self, project_name: str) -&gt; list</dt><dd><span class="code">Get&nbsp;the&nbsp;list&nbsp;of&nbsp;members&nbsp;associated&nbsp;with&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list:&nbsp;A&nbsp;list&nbsp;of&nbsp;usernames&nbsp;associated&nbsp;with&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-get_project_messages"><strong>get_project_messages</strong></a>(self, project_name: str) -&gt; list</dt><dd><span class="code">Get&nbsp;all&nbsp;messages&nbsp;associated&nbsp;with&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;list:&nbsp;A&nbsp;list&nbsp;of&nbsp;messages&nbsp;associated&nbsp;with&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-get_project_start_date"><strong>get_project_start_date</strong></a>(self, project_id: int) -&gt; datetime.datetime</dt><dd><span class="code">Get&nbsp;the&nbsp;start&nbsp;date&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;datetime:&nbsp;The&nbsp;start&nbsp;date&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-get_project_status"><strong>get_project_status</strong></a>(self, project_name: str) -&gt; str</dt><dd><span class="code">Get&nbsp;the&nbsp;status&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;str:&nbsp;The&nbsp;status&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-get_project_task_count"><strong>get_project_task_count</strong></a>(self, project_id: int) -&gt; int</dt><dd><span class="code">Get&nbsp;the&nbsp;count&nbsp;of&nbsp;tasks&nbsp;assigned&nbsp;to&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_id&nbsp;(int):&nbsp;The&nbsp;ID&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;<br>
+Returns:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;int:&nbsp;The&nbsp;count&nbsp;of&nbsp;tasks&nbsp;assigned&nbsp;to&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-remove_members"><strong>remove_members</strong></a>(self, project_name: str, username: str)</dt><dd><span class="code">Remove&nbsp;a&nbsp;member&nbsp;from&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;username&nbsp;(str):&nbsp;The&nbsp;username&nbsp;of&nbsp;the&nbsp;member&nbsp;to&nbsp;remove.</span></dd></dl>
+
+<dl><dt><a name="Project-set_project_end_date"><strong>set_project_end_date</strong></a>(self, project_name: str)</dt><dd><span class="code">Set&nbsp;the&nbsp;end&nbsp;date&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-set_project_start_date"><strong>set_project_start_date</strong></a>(self, project_name: str)</dt><dd><span class="code">Set&nbsp;the&nbsp;start&nbsp;date&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-set_project_status"><strong>set_project_status</strong></a>(self, project_name: str, status: str)</dt><dd><span class="code">Set&nbsp;the&nbsp;status&nbsp;of&nbsp;a&nbsp;project.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status&nbsp;(str):&nbsp;The&nbsp;status&nbsp;to&nbsp;set&nbsp;for&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-update_percentage_complete"><strong>update_percentage_complete</strong></a>(self, project_name: str)</dt><dd><span class="code">Update&nbsp;the&nbsp;percentage&nbsp;completion&nbsp;of&nbsp;a&nbsp;project&nbsp;based&nbsp;on&nbsp;its&nbsp;tasks&nbsp;completed.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<dl><dt><a name="Project-update_start_and_end_dates"><strong>update_start_and_end_dates</strong></a>(self, project_name: str, status: str)</dt><dd><span class="code">Update&nbsp;the&nbsp;start&nbsp;and&nbsp;end&nbsp;dates&nbsp;of&nbsp;a&nbsp;project&nbsp;based&nbsp;on&nbsp;its&nbsp;status.<br>
+&nbsp;<br>
+Parameters:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;project_name&nbsp;(str):&nbsp;The&nbsp;name&nbsp;of&nbsp;the&nbsp;project.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;status&nbsp;(str):&nbsp;The&nbsp;status&nbsp;of&nbsp;the&nbsp;project.</span></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><span class="code">dictionary&nbsp;for&nbsp;instance&nbsp;variables</span></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><span class="code">list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object</span></dd>
+</dl>
+</td></tr></table></td></tr></table>
+</body></html>
