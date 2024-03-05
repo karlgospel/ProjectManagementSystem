@@ -13,11 +13,4 @@ def main():
 
 
 if __name__ == '__main__':
-    #main()
-    pydoc.writedoc('login')
-    pydoc.writedoc('project')
-    pydoc.writedoc('Email')
-    pydoc.writedoc('interface')
-    pydoc.writedoc('task')
-    pydoc.writedoc('team_member')
-    pydoc.writedoc('super_admin')
+    main()
