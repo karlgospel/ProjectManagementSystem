@@ -7,5 +7,7 @@ Password: pass
 
 Regular user:
 
-Username: john_connor 
-Password: password
+Username: bilbo_baggins
+Password: pass
+
+All other accounts found in the application have 'pass' as their password
