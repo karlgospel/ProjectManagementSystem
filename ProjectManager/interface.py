@@ -693,18 +693,21 @@ class MainPage(tk.Toplevel):
         current_user = Login.current_user
         member = ProjectMember()
         member_access = member.is_project_member(current_user, selected_project)
+        print('meber access')
+        print(member_access)
+        print(selected_project)
         if not member_access:
             messagebox.showinfo('Access Denied', 'You do not have access to add messages to this project')
             return
         # Check project has been selected
         if selected_project:
 
-            popup = tk.Toplevel(self)
-            popup.title("Add Message")
+            self.message_popup = tk.Toplevel(self)
+            self.message_popup.title("Add Message")
 
             # Add labels and entry boxes - project name is disabled
-            tk.Label(popup, text="Project Name:").grid(row=0, column=0, padx=5, pady=5)
-            self.project_name = tk.Entry(popup)
+            tk.Label(self.message_popup, text="Project Name:").grid(row=0, column=0, padx=5, pady=5)
+            self.project_name = tk.Entry(self.message_popup)
             self.project_name.insert(0, selected_project)
             self.project_name.grid(row=0, column=1, padx=5, pady=5)
             self.project_name.config(state=tk.DISABLED)
@@ -713,13 +716,13 @@ class MainPage(tk.Toplevel):
             validation = self.register(self.validate_max_characters_thirty)
 
             # Message is limited to 30 characters
-            tk.Label(popup, text="Message (max 30 characters):").grid(row=1, column=0, padx=5, pady=5)
-            self.timeline_msg_entry = tk.Entry(popup, validate="key", validatecommand=(validation, "%P"))
+            tk.Label(self.message_popup, text="Message (max 30 characters):").grid(row=1, column=0, padx=5, pady=5)
+            self.timeline_msg_entry = tk.Entry(self.message_popup, validate="key", validatecommand=(validation, "%P"))
             self.timeline_msg_entry.grid(row=1, column=1, padx=5, pady=5)
 
-            self.add_message_button = ttk.Button(popup, text=" OK ", command=self.validate_timeline_msg)
+            self.add_message_button = ttk.Button(self.message_popup, text=" OK ", command=self.validate_timeline_msg)
             self.add_message_button.grid(row=2, column=1, padx=0, pady=5, sticky="w")
-            popup.destroy()
+
         else:
             messagebox.showinfo('Missing Information', 'Please select a project')
 
@@ -728,11 +731,7 @@ class MainPage(tk.Toplevel):
         """Validates and adds the timeline message."""
         current_user = Login.current_user
         project_name = self.project_name.get()
-        # member = ProjectMember()
-        # member_access = member.is_project_member(current_user,project_name)
-        # if not member_access:
-        #     messagebox.showinfo('Access Denied', 'You do not have access to add messages to this project')
-        #     return
+
         messages = ["Are you sure you want to add this message?","Messages cannot be removed once created"]
         response = messagebox.askquestion("Confirm Changes", "\n".join(messages))
         if response == 'yes':
@@ -742,6 +741,7 @@ class MainPage(tk.Toplevel):
                 pm.create_project_message(project_name, comment)
                 self.update_project_messages_treeview()
                 self.create_timeline_plot()
+                self.message_popup.destroy()
             except Exception as e:
                 print('Error validating timeline message', e)
 
@@ -839,32 +839,32 @@ class MainPage(tk.Toplevel):
             return
 
         # Open a new popup window for adding members to a project
-        popup = tk.Toplevel(self)
-        popup.title("Add Members")
+        self.add_member_popup = tk.Toplevel(self)
+        self.add_member_popup.title("Add Members")
 
-        tk.Label(popup, text="Project Name:").grid(row=0, column=0, padx=5, pady=5)
-        self.project_name_entry = tk.Entry(popup)
+        tk.Label(self.add_member_popup, text="Project Name:").grid(row=0, column=0, padx=5, pady=5)
+        self.project_name_entry = tk.Entry(self.add_member_popup)
         self.project_name_entry.insert(0, project_name)
         self.project_name_entry.config(state='disabled')
         self.project_name_entry.grid(row=0, column=1, padx=5, pady=5)
 
         # Only shows members who aren't already assigned to the project
         self.member_options = self.get_unassigned_members_for_project(project_name)
-        tk.Label(popup, text="Members:").grid(row=1, column=0, padx=5, pady=5)
-        self.unassigned_members_listbox = tk.Listbox(popup, height=10, width=30, selectmode=tk.MULTIPLE)
+        tk.Label(self.add_member_popup, text="Members:").grid(row=1, column=0, padx=5, pady=5)
+        self.unassigned_members_listbox = tk.Listbox(self.add_member_popup, height=10, width=30, selectmode=tk.MULTIPLE)
         for mem in self.member_options:
             self.unassigned_members_listbox.insert(tk.END, mem)
         self.unassigned_members_listbox.grid(row=1, column=1, padx=5, pady=5)
         scrollbar = tk.Scrollbar(
-            popup,
+            self.add_member_popup,
             orient=tk.VERTICAL,
             command=self.unassigned_members_listbox.yview)
         self.unassigned_members_listbox['yscrollcommand'] = scrollbar.set
         scrollbar.grid(row=1, column=2, sticky='ns')
 
-        add_member_button = ttk.Button(popup, text=" Assign to Project ", command=lambda: self.add_members_to_project
+        add_member_button = ttk.Button(self.add_member_popup, text=" Assign to Project ", command=lambda: self.add_members_to_project
         (project_name,
-         popup))
+         self.add_member_popup))
         add_member_button.grid(row=2, column=1, padx=2, pady=5, sticky="w")
 
 
@@ -895,7 +895,7 @@ class MainPage(tk.Toplevel):
                     e.send_project_emails(project_name)
                 except Exception as e:
                     messagebox.showerror("Error sending emails", f"{str(e)}")
-
+                self.add_member_popup.destroy()
 
             except Exception as e:
                 messagebox.showerror("Error making member changes", f"An error occurred: {str(e)}")
@@ -1074,7 +1074,7 @@ class MainPage(tk.Toplevel):
             selected_item = self.project_tree.focus()
             project_name = self.project_tree.item(selected_item, "values")[0]
         except Exception as e:
-            print('No project selected')
+            pass
 
         if selected_item:
 
@@ -1659,7 +1659,7 @@ class MainPage(tk.Toplevel):
         query = self.search_entry.get().lower()
         # Search for the query in the project treeview
         for child in self.project_tree.get_children():
-            project_name = self.project_tree.item(child, "values")[1].lower()
+            project_name = self.project_tree.item(child, "values")[0].lower()
             # If the query is found in the project name, open the project and select it
             if query in project_name:
                 self.project_tree.item(child, open=True)
