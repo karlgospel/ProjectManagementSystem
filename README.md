@@ -1,3 +1,11 @@
+To run application:
+
+Execute __main__.py
+
+located in the ProjectManager folder
+
+
+
 Example accounts:
 
 Admin:
