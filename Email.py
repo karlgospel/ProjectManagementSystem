@@ -3,7 +3,6 @@ import sqlite3
 import ssl
 from email.mime.text import MIMEText
 from tkinter import messagebox
-
 from task import Task
 
 

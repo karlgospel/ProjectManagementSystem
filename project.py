@@ -1,11 +1,5 @@
-import pandas as pd
 import sqlite3
 from datetime import datetime
-import matplotlib.pyplot as plt
-import numpy as np
-import matplotlib.dates as mdates
-
-from login import Login
 
 
 class Project:
@@ -28,26 +22,14 @@ class Project:
             Returns the percentage complete of a given project from the Project table in the database.
         get_project_id(project_name):
             Returns the ID related to a project from the Project table in the database.
-        get_project_members(project_name):
-            Get the list of members associated with a project.
-        add_members(project_name, *members):
-            Add members to a project.
-        remove_members(project_name, username):
-            Remove a member from a project.
         get_project_task_count(project_id):
             Get the count of tasks assigned to a project.
         get_project_completed_task_count(project_id):
             Get the count of completed tasks assigned to a project.
         update_percentage_complete(project_name):
             Update the percentage completion of a project based on its tasks percentage completion.
-        get_description(project_id):
-            Get the description of a project.
-        check_owner(user, project_id):
+        check_owner(user, project_name):
             Check if a user is the owner of a project.
-        create_project_message(project_name, message):
-            Create a message associated with a project.
-        create_timeline(project_name):
-            Create a timeline plot for a project based on its messages.
         get_project_start_date(project_id):
             Get the start date of a project.
         get_project_end_date(project_id):
@@ -66,8 +48,7 @@ class Project:
             Delete the end date of a project.
         delete_project(project_name):
             Delete a project from the database.
-        get_project_messages(project_name):
-            Get all messages associated with a project.
+
     """
 
 
@@ -129,8 +110,7 @@ class Project:
                     DESCRIPTION = (?)
                     WHERE PROJECT_ID = (?)'''
         cur.execute(sql, project)
-        print('PROJECT  EDIT')
-        print(pd.read_sql("SELECT * FROM Project", conn))
+
         conn.commit()
         conn.close()
 
@@ -215,73 +195,6 @@ class Project:
         conn.close()
         return project_id
 
-    def get_project_members(self, project_name: str) -> list:
-        """
-        Get the list of members associated with a project.
-
-        Parameters:
-            project_name (str): The name of the project.
-
-        Returns:
-            list: A list of usernames associated with the project.
-        """
-        conn = sqlite3.connect("project.db")
-        cur = conn.cursor()
-        sql_id = '''SELECT DISTINCT USERNAME FROM ProjectMembers WHERE PROJECT_NAME = (?)'''
-        cur.execute(sql_id, [project_name])
-        users = cur.fetchall()
-        members = [x[0] for x in users]
-        print(members)
-        conn.commit()
-        conn.close()
-        return members
-
-    def add_members(self, project_name: str, *members: str):
-        """
-        Add members to a project.
-
-        Parameters:
-            project_name (str): The name of the project.
-            *members (str): Variable length argument list of usernames to add.
-        """
-        conn = sqlite3.connect("project.db")
-        cur = conn.cursor()
-        project_id = self.get_project_id(project_name)
-        member_list = [x for x in members]
-        member_list = member_list[0]
-        for user in member_list:
-            project_member = (project_name, user, project_id)
-            sql = ''' INSERT INTO ProjectMembers (PROJECT_NAME, USERNAME, PROJECT_ID)
-                            VALUES(?,?,?) '''
-            cur.execute(sql, project_member)
-        print('PROJECT MEMBERS  ADD')
-        print(pd.read_sql("SELECT * FROM ProjectMembers", conn))
-        conn.commit()
-        conn.close()
-
-    def remove_members(self, project_name: str, username: str):
-        """
-        Remove a member from a project.
-
-        Parameters:
-            project_name (str): The name of the project.
-            username (str): The username of the member to remove.
-        """
-        conn = sqlite3.connect("project.db")
-        conn.execute("PRAGMA foreign_keys = ON")
-        cur = conn.cursor()
-        try:
-            project_member = (project_name, username)
-            sql = """ DELETE FROM ProjectMembers WHERE PROJECT_NAME = (?) AND USERNAME = (?) """
-            cur.execute(sql, project_member)
-            print('PROJECT MEMBERS  REMOVE')
-            print(pd.read_sql("SELECT * FROM ProjectMembers", conn))
-            conn.commit()
-            conn.close()
-
-        except Exception as e:
-            print("Error removing members from project:", e)
-
     def get_project_task_count(self, project_id: int) -> int:
         """
         Get the count of tasks assigned to a project.
@@ -353,49 +266,25 @@ class Project:
         # Insert new percentage complete
         sql = "UPDATE Project SET PERCENTAGE_COMPLETE = (?) WHERE PROJECT_ID = (?)"
         cur.execute(sql, [perc, project_id])
-        print(pd.read_sql("SELECT * FROM Project", conn))
         conn.commit()
         conn.close()
 
-    def get_description(self, project_id: int) -> str:
-        """
-        Get the description of a project.
 
-        Parameters:
-            project_id (int): The ID of the project.
-
-        Returns:
-            str: The description of the project.
-        """
-        conn = sqlite3.connect("project.db")
-        cur = conn.cursor()
-        sql = "SELECT DESCRIPTION FROM Project WHERE PROJECT_ID = (?)"
-        cur.execute(sql, [project_id])
-        try:
-            des = cur.fetchone()[0]
-            conn.commit()
-            conn.close()
-            return des
-        except:
-            print('No description found')
-            conn.commit()
-            conn.close()
-
-    def check_owner(self, user: str, project_id: int) -> bool:
+    def check_owner(self, user: str, project_name: int) -> bool:
         """
         Check if a user is the owner of a project.
 
         Parameters:
             user (str): The username of the user.
-            project_id (int): The ID of the project.
+            project_name (int): The ID of the project.
 
         Returns:
             bool: True if the user is the owner, False otherwise.
         """
         conn = sqlite3.connect("project.db")
         cur = conn.cursor()
-        sql = "SELECT OWNER FROM Project WHERE PROJECT_ID = (?)"
-        cur.execute(sql, [project_id])
+        sql = "SELECT OWNER FROM Project WHERE PROJECT_NAME = (?)"
+        cur.execute(sql, [project_name])
         per = cur.fetchone()
         print(per)
         if per is None:
@@ -406,92 +295,10 @@ class Project:
         conn.commit()
         conn.close()
         if per == user:
-            print('You are the one')
             return True
         else:
-            print('Imposter')
             return False
 
-    def create_project_message(self, project_name: str, message: str):
-        """
-        Create a message associated with a project.
-
-        Parameters:
-            project_name (str): The name of the project.
-            message (str): The message content.
-        """
-        conn = sqlite3.connect("project.db")
-        cur = conn.cursor()
-        username = Login.current_user
-        project_id = self.get_project_id(project_name)
-        try:
-            project = (project_id, message, username)
-            sql = ''' INSERT INTO ProjectMessages (PROJECT_ID, MESSAGE, USERNAME)
-                            VALUES(?,?,?) '''
-            cur.execute(sql, project)
-            print('PROJECT  message create')
-            print(pd.read_sql("SELECT * FROM ProjectMessages", conn))
-            conn.commit()
-            conn.close()
-        except Exception as e:
-            print('Error creating project message', e)
-
-    def create_timeline(self, project_name: str):
-        """
-        Create a timeline plot for a project based on its messages.
-
-        Parameters:
-            project_name (str): The name of the project.
-
-        Returns:
-            fig: The matplotlib figure object.
-        """
-        conn = sqlite3.connect("project.db")
-        cur = conn.cursor()
-        sql = "SELECT  MESSAGE, DATE_ADDED  FROM ProjectMessages pm INNER JOIN Project p on p.PROJECT_ID = pm.PROJECT_ID WHERE p.PROJECT_NAME = (?)"
-        cur.execute(sql, [project_name])
-        all_messages = cur.fetchall()
-        messages = []
-        dates = []
-        start_date = self.get_project_start_date(project_name)
-        end_date = self.get_project_end_date(project_name)
-        for message, date in all_messages:
-            messages.append(message)
-            dates.append(pd.to_datetime(date))
-
-        # Calculate levels for the stem plot
-        levels = np.linspace(0, 1, len(dates))
-
-        # Create the figure and axes
-        fig, ax = plt.subplots(figsize=(10, 6))
-
-        # Plot vertical lines representing messages
-        ax.vlines(dates, ymin=0, ymax=levels, color='lightgray', linewidth=1, alpha=0.7)
-
-        # Annotate each message with its text
-        for d, l, r in zip(dates, levels, messages):
-            ax.text(d, l, r, fontsize=10, ha='left', va='center', color='black')
-
-        # Set plot title and axis labels
-        ax.set(title=f'Timeline of {project_name}',
-               xlabel='Date', ylabel='')
-
-        # Format x-axis with date intervals
-        ax.xaxis.set_major_locator(mdates.DayLocator(interval=10))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%m-%d"))
-
-        # Rotate x-axis labels for better readability
-        plt.setp(ax.get_xticklabels(), rotation=45, ha="right")
-
-        # Remove spines
-        ax.spines[["left", "top", "right"]].set_visible(False)
-
-        # Set y-axis ticks and labels invisible
-        ax.set_yticks([])
-        ax.set_yticklabels([])
-
-        plt.tight_layout()
-        return fig
 
     def get_project_start_date(self, project_id: int) -> datetime:
         """
@@ -665,28 +472,27 @@ class Project:
         sql = """       DELETE FROM Project 
                         WHERE PROJECT_NAME = (?)"""
         cur.execute(sql, [project_name])
-        print(pd.read_sql("SELECT * FROM Project", conn))
         conn.commit()
         conn.close()
 
-    def get_project_messages(self, project_name: str) -> list:
-        """
-        Get all messages associated with a project.
-
-        Parameters:
-            project_name (str): The name of the project.
-
-        Returns:
-            list: A list of messages associated with the project.
-        """
-        conn = sqlite3.connect("project.db")
-        cur = conn.cursor()
-        sql = """       SELECT MESSAGE, USERNAME, DATE_ADDED
-                        FROM ProjectMessages pm 
-                        INNER JOIN Project p ON p.PROJECT_ID = pm.PROJECT_ID 
-                        WHERE p.PROJECT_NAME = (?)"""
-        cur.execute(sql, [project_name])
-        messages = cur.fetchall()
-        conn.commit()
-        conn.close()
-        return messages
+    # def get_project_messages(self, project_name: str) -> list:
+    #     """
+    #     Get all messages associated with a project.
+    #
+    #     Parameters:
+    #         project_name (str): The name of the project.
+    #
+    #     Returns:
+    #         list: A list of messages associated with the project.
+    #     """
+    #     conn = sqlite3.connect("project.db")
+    #     cur = conn.cursor()
+    #     sql = """       SELECT MESSAGE, USERNAME, DATE_ADDED
+    #                     FROM ProjectMessages pm
+    #                     INNER JOIN Project p ON p.PROJECT_ID = pm.PROJECT_ID
+    #                     WHERE p.PROJECT_NAME = (?)"""
+    #     cur.execute(sql, [project_name])
+    #     messages = cur.fetchall()
+    #     conn.commit()
+    #     conn.close()
+    #     return messages

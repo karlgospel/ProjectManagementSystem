@@ -3,7 +3,6 @@ from team_member import TeamMember
 from login import Login
 import sqlite3
 import bcrypt
-import pandas as pd
 import datetime
 
 class SuperAdmin(TeamMember):
@@ -101,7 +100,6 @@ class SuperAdmin(TeamMember):
         sd = (now, projectName)
         sql = "UPDATE Project SET START_DATE = (?) WHERE PROJECT_NAME = (?)"
         cur.execute(sql, sd)
-        print(pd.read_sql("SELECT * FROM Project", conn))
 
         # Commit changes and close connection
         conn.commit()

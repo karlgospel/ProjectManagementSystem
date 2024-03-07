@@ -1,7 +1,8 @@
 import sqlite3
-import pandas as pd
 from datetime import datetime
 from project import Project
+from team_member import TeamMember
+
 
 class Task:
     """
@@ -16,13 +17,15 @@ class Task:
         get_task(task_id):
             Retrieves the name of the task corresponding to the given task ID.
         delete_task(task_id):
-            De;etes the task from the database.
+            Deletes the task from the database.
         update_task_start_and_end_dates(task_id, status):
             Updates the start and end dates of the task based on the provided status.
         get_project_for_task(task_id):
             Retrieves the project name associated with the given task ID.
         edit_task(task_id, task_name, description, status, progress, assigned, comment):
             Modifies the details of an existing task.
+        check_task_access(username, task_id):
+            Checks the access level of the current user for the given task.
         set_task_percent_complete(task_id, progress):
             Sets the percentage completion of the task.
         set_start_date(task_id):
@@ -224,6 +227,28 @@ class Task:
             conn.commit()
             conn.close()
 
+    def check_task_access(self, username, task_id):
+        """
+        Checks the access level of the current user for the given task.
+
+        Parameters:
+            task_id (int): The ID of the task.
+            username (str): The username of the user.
+
+        Returns:
+            str: The access level ('admin', 'owner', 'restricted') for the current user.
+        """
+        this_user = username
+        tm = TeamMember()
+        admin = tm.is_admin(this_user)
+        assigned_to = self.is_assigned_to(task_id)
+        owner = self.get_owner_from_task(task_id)
+        if admin or (this_user == assigned_to):
+            return 'admin'
+        if owner == this_user:
+            return 'owner'
+        else:
+            return 'restricted'
     def set_task_percent_complete(self, task_id: int, progress: int) -> None:
         """
         Sets the percentage completion of the task.
@@ -245,7 +270,6 @@ class Task:
                         WHERE TASK_ID = (?)
                         """
             cur.execute(sql, completed)
-            print(pd.read_sql("SELECT * FROM Tasks", conn))
             conn.commit()
             conn.close()
         except Exception as e:
@@ -272,7 +296,6 @@ class Task:
                         """
 
             cur.execute(sql, new_date)
-            print(pd.read_sql("SELECT * FROM Tasks", conn))
             conn.commit()
             conn.close()
         except sqlite3.Error as e:
@@ -300,7 +323,6 @@ class Task:
                         WHERE TASK_ID = (?)
                         """
             cur.execute(sql, new_date)
-            print(pd.read_sql("SELECT * FROM Tasks", conn))
             conn.commit()
             conn.close()
         except sqlite3.Error as e:
@@ -347,8 +369,6 @@ class Task:
                                 VALUES(?,?,?) '''
         try:
             cur.execute(sql, new_comment)
-            print('TASK MESSAGE  ADD')
-            print(pd.read_sql("SELECT * FROM TaskMessages", conn))
             conn.commit()
             conn.close()
             return True
@@ -423,7 +443,6 @@ class Task:
         # Insert new percentage complete
         sql = "UPDATE Tasks SET PERCENTAGE_COMPLETE = (?) WHERE TASK_ID = (?)"
         cur.execute(sql, percent_complete)
-        print(pd.read_sql("SELECT * FROM Tasks", conn))
         conn.commit()
         conn.close()
 
@@ -519,7 +538,6 @@ class Task:
         # Insert new percentage complete
         sql = "UPDATE Tasks SET DESCRIPTION = (?) WHERE TASK_ID = (?)"
         cur.execute(sql, new_desc)
-        print(pd.read_sql("SELECT * FROM Tasks", conn))
         conn.commit()
         conn.close()
 
@@ -540,7 +558,6 @@ class Task:
         # Insert new percentage complete
         sql = "UPDATE Tasks SET ASSIGNED_TO = (?) WHERE TASK_ID = (?)"
         cur.execute(sql, assign)
-        print(pd.read_sql("SELECT * FROM Tasks", conn))
         conn.commit()
         conn.close()
 

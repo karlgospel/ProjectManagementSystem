@@ -105,35 +105,11 @@ def connect():
     #             "PROJECT_ID) VALUES ('Karl Gospel','Save Bubba', 1)")
     print(pd.read_sql("SELECT * FROM ProjectMembers", conn))
 
-    # # Create Task Messages table
-    # cur.execute(
-    #     "CREATE TABLE IF NOT EXISTS TaskMessages("
-    #     "MESSAGE_ID INTEGER PRIMARY KEY AUTOINCREMENT, "
-    #     "USERNAME TEXT NOT NULL, "
-    #     "TASK_ID INTEGER NOT NULL, "
-    #     "MESSAGE TEXT, "
-    #     "DATE_ADDED DATETIME DEFAULT CURRENT_TIMESTAMP,"
-    #     "CONSTRAINT FK_TASKS FOREIGN KEY (TASK_ID) REFERENCES Tasks(TASK_ID) ON DELETE CASCADE"
-    #     ")")
 
-    # print(pd.read_sql("SELECT * FROM TaskMessages", conn))
 
     conn.commit()
     conn.close()
 
 
-
-
-
-def View():
-    conn = sqlite3.connect("profile.db")
-    cur = conn.cursor()
-    #Choose what to display from database here
-    cur.execute("SELECT * FROM profile")
-    rows = cur.fetchall()
-    for row in rows:
-        print(row) # it print all records in the database
-        #tree.insert("", tk.END, values=row)
-    conn.close()
 
 connect()

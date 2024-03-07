@@ -4,7 +4,6 @@ import sqlite3
 from unittest.mock import patch
 import pandas as pd
 
-
 class MyTestCase(unittest.TestCase):
 
     def setUp(self):

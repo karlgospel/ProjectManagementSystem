@@ -1,6 +1,4 @@
-import re
 import bcrypt
-import pandas as pd
 import sqlite3
 
 class Login:

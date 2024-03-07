@@ -71,7 +71,7 @@ def load_project_data():
         ('Sales Training Program', 'forrest_gump', 'In-Progress', 'Selling shrimp is the future. We want to train a team on how to sell this smelly gold'),
         ('Staff Exercise Plan', 'bilbo_baggins', 'In-Progress', 'Our staff are looking a bit chunky. We''d like an exercise programme to help get those beach bods back. We''re thinking possibly a really long walk'),
         ('Social Club Campaign', 'tyler_durden', 'Not Started', 'We want to bring people together. Organise a club where members can let off some steam'),
-        ('Ancient Relic Recovery Initiative', 'indiana_jones', 'In-Progress', 'Our clients have lost one of their cups and need help to find it'),
+        ('Ancient Relic Recovery', 'indiana_jones', 'In-Progress', 'Our clients have lost one of their cups and need help to find it'),
 
     ]
 
@@ -122,7 +122,7 @@ def load_task_data():
          'Not Started',
          'andy_dufresne'),
         ('Sales Training Program', 'Train some monkeys',
-         'We haev some new egyptian monkey that are raring to go. Train them how to sell and let them loose',
+         'We have some new egyptian monkey that are raring to go. Train them how to sell and let them loose',
          'In-Progress',
          'jack_sparrow'),
         ('Staff Exercise Plan', 'Map out a walk',
@@ -137,11 +137,11 @@ def load_task_data():
          'Find some games to play for our new friends. Nothing too intense',
          'In-Progress',
          'james_bond'),
-        ('Ancient Relic Recovery Initiative', 'Create a map',
+        ('Ancient Relic Recovery', 'Create a map',
          'We need to find this cup. Do some research and create a map to locate it',
          'In-Progress',
          'jack_sparrow'),
-        ('Ancient Relic Recovery Initiative', 'Find a comfortable outfit',
+        ('Ancient Relic Recovery', 'Find a comfortable outfit',
          'This trip will be long and tough. We need some good clothes to handle whatever is thrown at us. Add a hat to look cool',
          'In-Progress',
          'michael_corleone'),
